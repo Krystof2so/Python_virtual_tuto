@@ -1,0 +1,16 @@
+# Ignorer les fichiers éventuellement générés par LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lot
+*.lof
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.run.xml
+*.bcf
+
+

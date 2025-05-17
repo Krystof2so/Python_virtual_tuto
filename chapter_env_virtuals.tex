@@ -1,0 +1,463 @@
+\chapter[Les environnements virtuels]{Les environnements virtuels - Isoler et optimiser ses projets}
+
+\begin{flushright}
+    \begin{minipage}{0.5\textwidth}
+    \begin{mdframed}[
+        linewidth=0.5pt, % Épaisseur de la bordure
+        roundcorner=5pt, % Coins arrondis
+        shadow=false, % Pas d'ombre
+        shadowsize=0pt, % Taille de l'ombre
+        backgroundcolor=gray!10, % Fond blanc
+        frametitleaboveskip=0pt, % Pas d'espace au-dessus du titre
+        frametitlebelowskip=0pt, % Pas d'espace en dessous du titre
+        frametitlebackgroundcolor=white, % Fond du titre blanc
+        frametitlerule=true, % Ligne de titre
+        frametitlefont=\normalfont, % Police du titre normale
+        frametitlealignment=\raggedright % Alignement du titre à gauche
+        width=0.5\textwidth % Largeur de la boîte à la moitié de la largeur du texte
+    ]
+    \textit{``L'essence de l'homme est d'être virtuel, parce qu'il ne peut se satisfaire de sa réalité passagère.''} \\
+    \textmd{--- Philippe Quéau}
+    \end{mdframed}
+    \end{minipage}
+\end{flushright}
+
+L'utilisation d'environnements virtuels est une pratique courante et efficace dans le développement Python. Ils permettent de gérer les dépendances séparément pour différents projets, ce qui évite les conflits et permet de conserver des configurations plus propres. Ainsi, chaque fois que l'on travaille sur un projet Python qui utilise des dépendances externes que l'on installe avec \textbf{pip}, il est préférable de créer d'abord un environnement virtuel.
+
+Les environnements virtuels sont des outils essentiels pour tout développeur Python, car ils offrent une solution simple et efficace pour isoler les dépendances de chaque projet. Cela signifie que nous pouvons travailler sur plusieurs projets simultanément, chacun ayant ses propres versions de bibliothèques, sans craindre les conflits de versions. Par exemple, un projet peut nécessiter \textbf{Pyside 6.4}, tandis qu'un autre projet peut nécessiter \textbf{Pyside 6.9}. Sans environnements virtuels, il serait difficile de gérer ces dépendances de manière propre et organisée.
+
+En créant un environnement virtuel pour chaque projet, nous pouvons installer les dépendances spécifiques à ce projet sans affecter les autres projets ou le système global. Cela est particulièrement utile lorsque vous travaillons sur des projets de grande envergure collaboratifs. Les environnements virtuels permettent de s'assurer que tous les membres de l'équipe utilisent les mêmes versions de bibliothèques, ce qui facilite la collaboration et réduit les risques d'erreurs.
+
+\section{Le module \texttt{venv}}
+Pour une utilisation basique, \textbf{venv} est un excellent choix car il est déjà fourni lors de l'installation de Python. Le module \textbf{venv} est un outil intégré à Python qui permet de créer et de gérer des environnements virtuels de manière simple et efficace. Il est particulièrement utile pour les développeurs qui souhaitent isoler les dépendances de leurs projets sans avoir à installer des outils supplémentaires.
+
+L'un des principaux avantages de \textbf{venv} est sa simplicité d'utilisation. Pour créer un nouvel environnement virtuel, il suffit d'exécuter la commande :
+\begin{verbatim}
+    $ python -m venv nom_de_l_environnement
+\end{verbatim}
+
+Cette commande crée un nouveau répertoire contenant une copie de l'interpréteur Python, ainsi que les répertoires nécessaires pour installer les bibliothèques spécifiques au projet.
+
+Une fois l'environnement virtuel créé, nous pouvons l'activer en utilisant la commande appropriée (selon le système d'exploitation). Par exemple, sur un système Unix ou MacOS, nous utiliserons la commande :
+\begin{verbatim}
+    $ source nom_de_l_environnement/bin/activate
+\end{verbatim}
+
+Une fois activé, nous pouvons installer les dépendances spécifiques à notre projet en utilisant \textbf{pip}, le gestionnaire de paquets de Python.
+
+Le module \textbf{venv} est également très flexible. Il permet de spécifier la version de Python à utiliser pour l'environnement virtuel, ce qui est particulièrement utile lorsque nous travaillons sur des projets nécessitant des versions spécifiques de Python. De plus, \textbf{venv} est compatible avec la plupart des outils et bibliothèques Python, ce qui en fait un choix polyvalent pour une large gamme de projets.
+
+\subsection*{Installation de \texttt{venv}}
+L'installation de \textbf{venv} se réalise au niveau du système global. Sur un système \textbf{Debian GNU/Linux}:
+
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \#}| apt install python3.13-venv
+Installation de :
+  python3.13-venv
+
+Installation de dependances :
+  python3-pip-whl  python3-setuptools-whl
+
+[...]
+Dépaquetage de python3.13-venv (3.13.3-2) ...
+Paramétrage de python3-setuptools-whl (78.1.0-1.2) ...
+Paramétrage de python3-pip-whl (25.1.1+dfsg-1) ...
+Paramétrage de python3.13-venv (3.13.3-2) ...
+\end{lstlisting}
+
+\subsection*{Créer un environnement virtuel}
+Se rendre dans le répertoire du projet, et saisir la commande :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/
+\end{lstlisting}
+
+A noter que par convention l'environnement virtuel est souvent nommé \textbf{venv} ou \textbf{env} ou \textbf{.venv}. De plus, il n'est pas nécessaire d'utiliser une barre oblique à la fin du nom, mais elle est là pour rappeler que c'est un répertoire qui est créé.
+
+Nous pouvons donc vérifier la présence du répertoire contenant notre environnement au sein de notre projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| ls -a
+.  ..  .venv
+\end{lstlisting}
+
+\subsection*{Activation de cet environnement virtuel}
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| source .venv/bin/activate
+(.venv)|\textcolor{terminalprompt}{user@machine: \$}|
+\end{lstlisting}
+
+Noter la modification du prompt qui est désormais précédé du nom de l'environnement virtuel.
+
+Il est toutefois possible de travailler sur ses fichiers sans activer l'environnement virtuel mais l'activation sera nécessaire avant l'exécution du script.
+
+\subsection*{Installer des dépendances}
+Après avoir créé et activé l'**environnement virtuel**, nous pouvons installer toutes les dépendances externes dont nous avons besoin pour notre projet. Installons par exemple le module \textbf{Pyside6} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install pyside6
+Collecting pyside6
+  Using cached PySide6-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (5.5 kB)
+Collecting shiboken6==6.9.0 (from pyside6)
+  Using cached shiboken6-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting PySide6-Essentials==6.9.0 (from pyside6)
+  Using cached PySide6_Essentials-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (3.9 kB)
+Collecting PySide6-Addons==6.9.0 (from pyside6)
+  Using cached PySide6_Addons-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (4.2 kB)
+Using cached PySide6-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl (558 kB)
+Using cached PySide6_Addons-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl (166.3 MB)
+Using cached PySide6_Essentials-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl (94.2 MB)
+Using cached shiboken6-6.9.0-cp39-abi3-manylinux_2_28_x86_64.whl (206 kB)
+Installing collected packages: shiboken6, PySide6-Essentials, PySide6-Addons, pyside6
+Successfully installed PySide6-Addons-6.9.0 PySide6-Essentials-6.9.0 pyside6-6.9.0 shiboken6-6.9.0
+\end{lstlisting}
+
+\textbf{pip} installe alors les paquets dans un endroit isolé (en dehors du système), et nous pouvons maintenant travailler sur notre projet Python sans vous soucier des conflits de dépendances.
+
+Une fois terminé de travailler avec cet environnement virtuel nous pouvons le désactiver :
+\begin{lstlisting}[style=terminal]
+(.venv)|\textcolor{terminalprompt}{user@machine: \$}| deactivate
+|\textcolor{terminalprompt}{user@machine: \$}|
+\end{lstlisting}
+
+Le prompt ne fait plus alors mention de l'environnement virtuel.
+
+\section{Intérêt des environnements virtuels}
+Techniquement, Python est installé avec deux répertoires \texttt{site-packages} ou \\
+\texttt{dist-packages} :
+
+\begin{itemize}
+    \item \texttt{purelib/} qui ne contient que des modules écrits en code Python pur.
+    \item \texttt{platlib/} qui contient des binaires qui ne sont pas écrits en Python pur, par exemple des fichiers \texttt{.dll}, \texttt{.so} ou \texttt{.pydist}.
+\end{itemize}
+\medskip
+
+Pour visualiser les chemins de ces répertoires sur le système, se rendre dans l'interpréteur Python puis :
+\begin{verbatim}
+    >>> import sysconfig
+    >>> sysconfig.get_path("purelib")
+    '/usr/local/lib/python3.13/dist-packages'
+    >>> sysconfig.get_path("platlib")
+    '/usr/local/lib/python3.13/dist-packages'
+\end{verbatim}
+
+Et avec notre environnement virtuel activé :
+\begin{verbatim}
+    >>> import sysconfig
+    >>> sysconfig.get_path("purelib")
+    '/venv/lib/python3.13/site-packages'
+    >>> sysconfig.get_path("platlib")
+    '/venv/lib/python3.13/site-packages'
+\end{verbatim}
+
+L'intérêt des environnements virtuels se situe à plusieurs niveaux :
+
+\begin{itemize}
+    \item Évite la pollution du système.
+    \item Évite les conflits dépendances (un même paquet avec des versions différentes, une version spécifique à chaque projet développé).
+    \item Minimiser les problèmes de reproductivité : avec un environnement virtuel distinct pour chaque projet, il sera plus facile de lire les exigences du projet à partir des dépendances épinglées, et ainsi de partager ces exigences avec d'autres collaborateurs du projet.
+    \item Permet d'installer des paquets sans avoir besoin de droits administrateurs sur la machine, puisque ces paquets ne seront pas accessibles en dehors de l'environnement virtuel.
+\end{itemize}
+
+\section{Structure d'un environnement virtuel}
+
+\subsection*{Une structure de répertoires}
+
+Un environnement virtuel Python est une structure de répertoires qui offre tout ce dont nous avons besoin pour exécuter un environnement Python léger mais isolé.
+
+En créant un nouvel environnement virtuel à l'aide du module \textbf{venv}, Python crée une structure de répertoires autonome et copie ou établit des liens symboliques avec les fichiers exécutables de Python dans cette structure. Nous pouvons visualiser cette structure à l'aide de la commande \texttt{tree} (la sortie de cette commande est alors très longue). 
+
+Nous retrouvons les répertoires suivants :
+
+\begin{description}
+    \item[bin/] : contient les fichiers exécutables de l'environnement virtuel. Les plus importants sont l'interpréteur Python et l'exécutable \textbf{pip}. Le répertoire contient également des scripts d'activation pour l'environnement virtuel.
+    \item[include/] : est un répertoire initialement vide que Python utilise pour inclure des fichiers d'en-tête en langage C pour les paquets installés et qui dépendent d'extensions en C.
+    \item[lib/] : contient le répertoire \texttt{site-packages/}, répertoire qui est l'une des principales raisons de la création de l'environnement virtuel. C'est dans ce dossier que seront installés les paquets externes utilisés par l'environnement virtuel. 
+    \item[lib64/] : sur de nombreux systèmes Linux est un lien symbolique vers \texttt{lib/} pour des raisons de compatibilité.
+    \item Un répertoire \verb|{nom}-{version}.dist-info/|, obtenu par défaut pour \textbf{pip}, contient des informations sur la distribution des paquets.
+    \item[pyvenv.cfg] : est un fichier crucial pour votre environnement virtuel (cf. infra).
+\end{description}
+
+Il y a trois parties essentielles pour un environnement virtuel :
+
+\begin{itemize}
+    \item Une copie ou un lien symbolique du binaire Python
+    \item Un fichier \texttt{pyenv.cfg}
+    \item Un répertoire \texttt{site-packages}
+\end{itemize}
+
+Par défaut, \textbf{venv} n'installe que \textbf{pip}, qui est l'outil recommandé pour installer des paquets Python :
+\begin{lstlisting}[style=terminal]
+(venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip list
+Package    Version
+-------    -------
+pip        25.0.1
+\end{lstlisting}
+
+Un environnement virtuel n’est finalement qu’une structure de répertoires qu'il est possible de supprimer et de recréer à tout moment.
+
+\subsection*{Une installation Python isolée}
+
+Pour isoler l'environnement virtuel du système, \textbf{venv} reproduit la structure des répertoires qu’une installation standard de Python crée.
+
+Le fichier \texttt{pyvenv.cfg} est un petit fichier qui contient quelques paires clé-valeur, paramètres essentiels pour faire fonctionner l'environnement virtuel :
+\begin{verbatim}
+    home = /usr/bin
+    include-system-site-packages = false
+    version = 3.13.2
+    executable = /usr/bin/python3.13
+    command = /usr/bin/python3 -m venv /chemin/projet/venv
+\end{verbatim}
+
+Même si l'environnement virtuel est isolé, nous pouvons toutefois accéder aux modules de la bibliothèque standard de Python car notre environnement virtuel réutilise les modules intégrés de Python et de la bibliothèque standard de l’installation de Python utilisée pour créer l'environnement virtuel. Comme nous avons toujours besoin d’une installation Python existante pour créer notre environnement virtuel, \textbf{venv} opte pour réutiliser les modules de bibliothèque standard existants afin d’éviter les coûts liés à leur copie dans un nouvel environnement virtuel.
+
+En plus des modules de la bibliothèque standard nous pouvons donner à notre environnement virtuel l’accès au \texttt{site-packages} de l’installation de base par un argument lorsque l'on crée l’environnement :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --system-site-packages
+\end{lstlisting}
+
+En ajoutant \texttt{--system-site-packages}, Python définit la valeur \texttt{include-system-}\\
+\texttt{site-packages} dans \texttt{pyvenv.cfg} à \texttt{true}. Ce paramètre signifie que nous pouvons utiliser n’importe quel paquet externe que nous avons installé sur le système de base Python comme si nous les avions installés dans notre environnement virtuel.
+
+Cette connexion ne fonctionne que dans une seule direction, car les nouveaux paquets installés dans l'environnement virtuel ne se mélangeront pas avec les paquets présents. Python respectera la nature isolée des installations de l'environnement virtuel et les placera dans le répertoire \texttt{site-packages} propre à l’environnement virtuel.
+
+\section{Fonctionnement d'un environnement virtuel}
+
+Lorsque l'on crée un environnement virtuel à l’aide de \textbf{venv}, le module recrée la structure des fichiers et répertoires d’une installation standard de Python présente sur le système. Python copie également dans le répertoire l’exécutable Python avec lequel nous avons appelé \textbf{venv} :
+\begin{verbatim}
+venv/
+│
+|── bin/
+│   |── Activate.ps1
+│   |── activate
+│   |── activate.csh
+│   |── activate.fish
+│   |── pip
+│   |── pip3
+│   |── pip3.13
+│   |── python
+│   |── python3
+│   |── python3.13
+│
+|── include/
+│
+|── lib/
+│   │
+│   |── python3.13/
+│       │
+│       |── site-packages/
+│
+|── lib64/
+│   │
+│   |── python3.13/
+│       │
+│       |── site-packages/
+│
+|── pyvenv.cfg
+\end{verbatim}
+
+Cette structure ressemble à celle que l'on retrouve au niveau du système d'exploitation. \textbf{venv} crée cette structure de répertoires pour s’assurer que Python fonctionnera comme prévu en isolation, sans avoir besoin d’appliquer des modifications supplémentaires. 
+
+L'interpréteur Python dans un environnement virtuel créé avec \textbf{venv} cherche d'abord un fichier \texttt{pyvenv.cfg}. Si ce fichier est trouvé et contient une clé \texttt{home}, il utilise cette clé pour définir deux variables :
+
+\begin{description}
+    \item[sys.base\_prefix] : le chemin vers l'exécutable Python utilisé pour créer l'environnement virtuel.
+    \item[sys.prefix] : le répertoire contenant \texttt{pyvenv.cfg}
+\end{description}
+
+Si \texttt{pyvenv.cfg} n'est pas trouvé, l'interpréteur détermine qu'il n'est pas dans un environnement virtuel, et \texttt{sys.base\_prefix} et \texttt{sys.prefix} pointent vers le même chemin.
+
+Dans l'environnement virtuel :
+\begin{verbatim}
+    >>> import sys
+    >>> sys.base_prefix
+    '/usr'
+    >>> sys.prefix
+    '/home/chemin/vers/venv'
+\end{verbatim}
+
+En dehors de l'environnement virtuel :
+\begin{verbatim}
+    >>> import sys
+    >>> sys.base_prefix
+    '/usr'
+    >>> sys.prefix
+    '/usr'
+\end{verbatim}
+
+Ainsi, un environnement virtuel Python dans sa forme la plus simple n'est rien de plus qu’une copie ou un lien symbolique du binaire Python accompagné d’un fichier \texttt{pyvenv.cfg} et d’un répertoire \texttt{site-packages}. 
+
+Si ces deux variables ont des valeurs différentes, alors Python adapte où il va rechercher les modules : l’interpréteur Python de l'environnement virtuel utilise les modules de la bibliothèque standard de l'installation Python de base tout en pointant vers son propre répertoire interne \texttt{site-packages} pour installer et accéder aux paquets externes.
+
+Le renvoi vers la bibliothèque standard permet d'obtenir un environnement virtuel Python léger, que nous pouvons rapidement créer puis supprimer lorsque nous n’en n'avons plus besoin. Pour ce faire, \textbf{venv} ne copie que les fichiers nécessaires.
+
+Pour s’assurer que les scripts que nous voulons exécuter utilisent l’interpréteur Python dans notre environnement virtuel, \textbf{venv} modifie la variable d’environnement \texttt{PYTHONPATH} (voir les différences de résultat de l'instruction \texttt{sys.path} dans l'environnement virtuel et en dehors de cet environnement). Ce changement dans les paramètres de chemin de Python crée effectivement l’isolement des paquets externes dans l'environnement virtuel.
+
+Pour lancer un interpréteur Python dans l'environnement virtuel, de la même manière que si nous l'avions activé au préalable :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| /home/chemin/vers/venv/bin/python
+\end{lstlisting}
+
+Pour vérifier que l'interpréteur pointe bien vers l'environnement virtuel  et vers l'exécutable Python idoine:
+\begin{verbatim}
+    >>> from sys import prefix, executable
+    >>> prefix
+    /home/chemin/vers/venv
+    >>> executable
+    /home/chemin/vers/venv/bin/python
+\end{verbatim}
+
+Tant que nous fournissons le chemin d'accès à notre exécutable Python, nous n'avons pas besoin d'activer notre environnement virtuel pour profiter des avantages qu'il offre.
+
+\section{Personnaliser un environnement virtuel}
+\subsection*{Écraser un environnement virtuel et le remplacer par un autre}
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/
+|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip install requests
+|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip list
+Package            Version
+-------            -------
+certifi            2025.1.31
+charset-normalizer 3.4.1
+idna               3.10
+pip                25.0.1
+requests           2.32.3
+urllib3            2.4.0
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --clear
+|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip list
+Package            Version
+-------            -------
+pip                25.0.1
+\end{lstlisting}
+
+Si l'option \texttt{--clear} n'est pas précisée, et qu'un environnement virtuel du même nom existe, rien ne sera alors exécuté, et le premier environnement virtuel sera conservé.
+
+\subsection*{Créer plusieurs environnements virtuels en une seule fois}
+Si un seul environnement virtuel ne suffit pas, il est possible d'en créer plusieurs distincts en une seule fois en indiquant plusieurs chemins d'accès à la commande :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ /chemin/venv-copy
+\end{lstlisting}
+
+Il est tout à fait possible de créer autant d'environnements virtuels que de chemins indiqués (chemins séparés par un espace).
+
+\subsection*{Mise à jour des dépendances de base}
+Lorsque l'on crée un environnement virtuel à l'aide de \textbf{venv} avec ses paramètres par défaut et que l'on installe ensuite un paquetage externe à l'aide de \textbf{pip}, nous pouvons rencontrer un message indiquant que l'installation de \textbf{pip} est obsolète. En fait \textbf{pip} se connecte à \textbf{PyPI}\footnote{\url{https://pypi.org/}} et identifie également si \textbf{pip} lui-même est obsolète, et si tel est le cas la commande affiche l'avertissement d'obsolescence.  Il est alors préférable de disposer de la dernière version de \textbf{pip} pour éviter les problèmes de sécurité ou les bogues qui pourraient subsister dans une version plus ancienne. Pour un environnement virtuel existant, nous pouvons suivre les instructions que \textbf{pip} imprime dans le terminal pour une mise à jour.
+
+Pour créer un environnement virtuel en demandant une mise à jour automatique de \textbf{pip} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --upgrade-deps
+\end{lstlisting}
+
+\subsection*{Éviter d'installer \textit{pip}}
+Dans la plupart des cas, nous voudrons que \textbf{pip} soit installé dans notre environnement virtuel car il nous servira pour installer des paquets externes provenant de \textbf{PyPI}. Cependant, si nous n'avons pas besoin de \textbf{pip}, nous pouvons utiliser \texttt{--without-pip} pour créer un environnement virtuel sans \textbf{pip}, ce qui ne créera que la structure des répertoires (structure plus légère qu'avec \textbf{pip} installé : quelques ko au lieu de plusieurs Mo).
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --without pip
+\end{lstlisting}
+
+\subsection*{Inclure le \texttt{site-packages} du système}
+Pour cela on ajoutant l'option \texttt{--system-site-packages} lors de la création de l'environnement virtuel. Et tout paquet externe supplémentaire, sera ensuite placé dans le répertoire \texttt{site-packages} de l'environnement virtuel. Il faut toutefois garder à l'esprit que nous n'aurons qu'un accès en lecture au répertoire \texttt{site-packages} du système.
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --system-site-packages
+\end{lstlisting}
+
+Dans le fichier \texttt{pyenv.cgf} nous trouvons alors la ligne suivante:
+\begin{verbatim}
+    include-system-site-packages = true
+\end{verbatim}
+
+\subsection*{Mettre à jour votre Python pour qu'il corresponde à celui du système}
+En construisant son environnement virtuel en utilisant des copies plutôt que des liens symboliques et que l'on souhaite ensuite mettre à jour la version de base de Python sur le système, nous pourrions rencontrer un problème de décalage de version avec les modules de la bibliothèque standard.
+
+Le module \textbf{venv} offre une solution à ce problème. L'argument optionnel \texttt{--upgrade} permet de conserver le répertoire \texttt{site-packages} intact tout en mettant à jour les fichiers binaires avec les nouvelles versions du système :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --upgrade
+\end{lstlisting}
+
+\section{Gestion des environnements virtuels}
+\subsection*{Où créer les répertoires d'environnement ?}
+Puisqu'un environnement virtuel Python n'est qu'une structure de répertoires, nous pouvons le placer n'importe où sur le système. Et il existe deux solutions, qui présentent chacune des avantages et des inconvénients, quant à l'endroit où créer les répertoires d'environnement virtuel :
+
+\begin{itemize}
+    \item Dans chaque répertoire de projet individuel
+    \item Dans un emplacement unique, par exemple dans un sous-répertoire du répertoire personnel
+\end{itemize}
+
+Avec la première solution, nous créons un nouvel environnement virtuel dans le répertoire racine du projet :
+\begin{verbatim}
+project_name/
+│
+|── venv/
+│
+|── src/
+\end{verbatim}
+
+Le répertoire de l'environnement virtuel cohabite alors avec tout le code du projet. L'avantage de cette structure est que l'on sait d'emblée quel environnement virtuel appartient à quel projet et l'activation se réalise à l'aide d'un chemin relatif court.
+
+Avec la seconde solution tous les environnements virtuels sont placés dans un seul répertoire :
+\begin{verbatim}
+name/
+│
+|── Desktop/
+│
+|── Documents/
+│   │
+│   |── projects/
+│       │
+│       |── django-project/
+│       │
+│       |── flask-project/
+│       │
+│       |── pandas-project/
+│
+|── venvs
+│   │
+│   |── django-venv/
+│   │
+│   |── flask-venv/
+│   │
+│   |── pandas-venv/
+│
+|── Autres_répertoires/
+\end{verbatim}
+
+Si tous les environnements virtuels  sont centralisés dans un même répertoire, il est nécessaire d'user d'un chemin absolu pour les activer.
+
+A noter que la plupart des IDE offrent cette possibilité de choix\footnote{Pour \textbf{Visual Studio Code} : \url{https://code.visualstudio.com/docs/python/environments}. Pour \textbf{PyCharm} : \url{https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html}}.
+
+\subsection*{Des objets jetables}
+Les environnements virtuels sont des structures de répertoires jetables. Il ne faut donc pas y ajouter manuellement du code ou des informations supplémentaires.Tout ce qui s'y trouve doit être géré par le gestionnaire de paquets.
+
+Un environnement virtuel ne doit pas non plus être livré au contrôle de version. Les environnements virtuels ne sont pas des installations Python entièrement autonomes, il ne s'agit donc pas d'une application portable. De même, les environnements virtuels en production sont déconseillés\footnote{\url{https://realpython.com/python-virtual-environments-a-primer/\#avoid-virtual-environments-in-production}}.
+
+\subsection*{Épingler les dépendances}
+Pour reproduire un environnement virtuel  il nous faut décrire son contenu via un fichier spécifique : \texttt{requirements.txt}.
+\begin{lstlisting}[style=terminal]
+(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip freeze > requirements.txt
+\end{lstlisting}
+
+Ce fichier contient une liste des dépendances externes installées dans l'environnement virtuel. C'est à l'aide de ce fichier que nous saurons le récréer.
+\begin{lstlisting}[style=terminal]
+(.venv) |\textcolor{terminalprompt}{user@machine: \$}| deactivate
+|\textcolor{terminalprompt}{user@machine: \$}| rm -Rf .venv
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv .new-venv/
+|\textcolor{terminalprompt}{user@machine: \$}| source .new-venv/bin/activate
+(.new-venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -r requiremen
+    ts.txt
+\end{lstlisting}
+
+En soumettant le fichier \texttt{requirements.txt} au contrôle de version, nous livrons le code du projet ainsi que la recette qui permettra de recréer le même environnement virtuel.
+
+Cependant ce fichier contient des limites : 
+
+\begin{itemize}
+    \item Il ne contient pas d'informations sur la version de Python utilisée lors de la création de l'environnement virtuel.
+    \item Peuvent ne pas être inclues les informations sur la version des sous-dépendances des dépendances.
+\end{itemize}
+
+C'est alors que d'autres outils de gestion des dépendances seront nécessaires. Nous aborderons l'outil \textbf{Poetry} dans un prochain chapitre et qui sait répondre à ces limites.
+\bigskip
+
+\begin{center}
+    \pgfornament[width=0.3\textwidth]{87} % 87 est le numéro de l'ornement
+\end{center}
+
+Nous venons d'explorer les fondamentaux des environnements virtuels en Python et l'utilisation du module intégré \textbf{venv}. Nous avons découvert comment créer et gérer des environnements isolés pour nos projets, assurant ainsi une gestion propre et organisée des dépendances. Si \textbf{venv} offre une solution simple et efficace, dans le chapitre qui suit nous allons voir un outil encore plus puissant et flexible : \textbf{virtualenv}. 
+
+
