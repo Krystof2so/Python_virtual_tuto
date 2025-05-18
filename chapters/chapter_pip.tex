@@ -1,0 +1,23 @@
+\chapter[\textit{pip}]{\textit{pip} \\ Maîtriser l'art de la gestion \\ des paquets Python}
+
+\insertcitation{La première règle de l'écologie, c'est que les éléments sont tous liés les uns aux autres.}{Barry Commoner}
+\bigskip
+
+Dans le vaste écosystème de Python, \textbf{pip}\footnote{Documentation officielle : \url{https://pip.pypa.io/en/stable/}} se révèle comme étant un outil indispensable. En tant que gestionnaire de paquets par défaut, pip permet d'installer, de mettre à jour et de supprimer des bibliothèques Python de manière simple et efficace. Que l'on travaille sur un petit projet personnel ou sur une application complexe, \textbf{pip} offre la flexibilité et la puissance nécessaires pour gérer les dépendances des projets avec précision.
+
+L'un des principaux avantages de \textbf{pip} est sa simplicité d'utilisation. Avec des commandes intuitives, nous pouvons installer des paquets en quelques secondes, explorer de nouvelles bibliothèques. De plus, \textbf{pip} est compatible avec une multitude de dépôts de paquets, offrant ainsi un accès à une vaste gamme de bibliothèques et d'outils développés par la communauté Python.
+
+Dans ce chapitre, j'aborderai les fonctionnalités essentielles de \textbf{pip} et comment tirer le meilleur parti de cet outil pour optimiser le flux de travail de développement. 
+
+\section{Utilisation dans un environnement virtuel}
+Pour éviter d'installer des paquets directement dans l'installation Python du système, il est recommandé d'utiliser un environnement virtuel. Tous les paquets utilisés dans cet environnement seront alors indépendants de l'interpréteur du système. 
+
+Cela présente trois avantages principaux :
+\begin{itemize}
+    \item L'assurance d'utiliser la bonne version de Python pour le projet en cours.
+    \item L'assurance de se référer à la bonne instance de \textbf{pip}.
+    \item L'utilisation d'une version de paquetage spécifique pour un projet sans affecter les autres projets.
+\end{itemize}
+
+\section{Installer des paquets avec \textit{pip}}
+Le langage Python dispose d'une bibliothèque standard, mais également de paquets publiés sur le \textbf{Python Package Index}\footnote{\url{https://pypi.org/}}, également connu sous le nom de \textbf{PyPI}, qui  héberge une vaste collection de paquets, y compris des cadres (\textit{framework}) de développement, des outils et des bibliothèques.

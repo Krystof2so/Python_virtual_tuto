@@ -1,12 +1,14 @@
-
 \documentclass[a4paper,12pt]{book}
 
-% packages de base
+% ----------------
+% --- PACKAGES ---
+% ----------------
+% Packages de base :
 \usepackage[english,francais]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-% packages additionnels
+% Packages additionnels :
 \usepackage{color}  % pour utiliser des couleurs
 \usepackage{fancyhdr}  % Personnalisation en-tête et pied de page
 \usepackage{graphicx}
@@ -17,25 +19,50 @@
 \usepackage{newunicodechar} % Pour définir des caractères Unicode
 \usepackage{pgfornament} % Pour utiliser les ornements
 \usepackage{times} % Pour utiliser la police Times New Roman
+\usepackage{titlesec} % Pour personnaliser les titres de chapitre
 \usepackage{verbatim}  % pour les citations de code
 \usepackage{xcolor}  % pour utiliser des couleurs
 \usepackage{xurl}  % pour gérer la césure des urls.
 \usepackage{zi4} % Pour une police spéciale 'code' dans l'environnement 'verbatim', 'lstlisting' et 'texttt'.
 
+% Placer en dernier :
 \usepackage{hyperref}
 
-% Définir l'espace entre les paragraphes
+
+% ------------------------------------
+% --- CARACTERISTIQUES DU DOCUMENT ---
+% ------------------------------------
+% Définir l'espace entre les paragraphes :
 \setlength{\parskip}{1em} % Ajoute un espace de 1em entre les paragraphes
 
-% Définition de couleurs
+% Définir les caractères spéciaux :
+\DeclareUnicodeCharacter{2502}{|} % |
+\DeclareUnicodeCharacter{251C}{\textbackslash} % ├
+\DeclareUnicodeCharacter{2500}{-} % ─
+\DeclareUnicodeCharacter{2514}{\textbackslash} % └
+
+
+% ------------------------------
+% --- DEFINITION DE COULEURS ---
+% ------------------------------
+% Pour le code Python (script) :
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \definecolor{codegreen}{rgb}{0,0.6,0}
-% Définir les couleurs pour le terminal
+
+% Pour le terminal :
 \definecolor{terminalbackground}{HTML}{6F6F6F} % Fond gris
 \definecolor{terminaltext}{HTML}{8FBCBB} % Texte vert
 \definecolor{terminalprompt}{HTML}{FF8700} % Prompt orange
 
-% Environnement pour du code Python:
+% Définir les couleurs bleu et jaune du logo Python :
+\definecolor{pythonblue}{RGB}{54,117,171}
+\definecolor{pythonyellow}{RGB}{220,176,30}
+
+
+% -------------------------------------------
+% --- ENVIRONNEMENTS (LSTLISTING) DE CODE ---
+% -------------------------------------------
+% Environnement pour du code Python :
 \lstset{
     language=Python,
     aboveskip=5mm,  % Marge avant l'insertion du code
@@ -63,7 +90,7 @@
         {Ò}{{\`O}}1
 }
 
-% Environnement pour imiter un terminal
+% Environnement pour imiter un terminal :
 \lstdefinestyle{terminal}{
     backgroundcolor=\color{terminalbackground}, % Fond gris foncé
     basicstyle=\ttfamily\color{terminaltext}, % Police à chasse fixe et texte vert
@@ -79,17 +106,53 @@
     escapeinside={|}{|} % Utiliser pour échapper à LaTeX
 }
 
-% Définir les caractères spéciaux
-\DeclareUnicodeCharacter{2502}{|} % |
-\DeclareUnicodeCharacter{251C}{\textbackslash} % ├
-\DeclareUnicodeCharacter{2500}{-} % ─
-\DeclareUnicodeCharacter{2514}{\textbackslash} % └
 
+% --------------------------------------
+% --- TITRE ET EN-TETE DES CHAPITRES ---
+% --------------------------------------
+% Personnaliser les titres des chapitres avec un cadre
+\titleformat{\chapter}[frame]
+  {\normalfont\Huge\bfseries\color{pythonblue}}
+  {\textcolor{pythonyellow}{}\ \textcolor{pythonyellow}{\thechapter}}
+  {25pt}
+  {\Huge\centering}
+
+% Définir une commande personnalisée pour la citation :
+\newcommand{\insertcitation}[2]{%
+    \hfill % Pousse le minipage vers la droite
+    \begin{minipage}{0.5\textwidth}
+        \begin{mdframed}[
+            linewidth=0.5pt, % Épaisseur de la bordure
+            roundcorner=5pt, % Coins arrondis
+            shadow=false, % Pas d'ombre
+            shadowsize=0pt, % Taille de l'ombre
+            backgroundcolor=gray!10, % Fond gris clair
+            frametitleaboveskip=0pt, % Pas d'espace au-dessus du titre
+            frametitlebelowskip=0pt, % Pas d'espace en dessous du titre
+            frametitlebackgroundcolor=white, % Fond du titre blanc
+            frametitlerule=true, % Ligne de titre
+            frametitlefont=\normalfont, % Police du titre normale
+            frametitlealignment=\raggedright % Alignement du titre à gauche
+        ]
+        \textit{``#1''} \\
+        \textmd{--- #2}
+        \end{mdframed}
+    \end{minipage}
+}
+
+
+% ----------------------
+% --- TITRE DU LIVRE ---
+% ----------------------
 \title{Environnements de programmation Python, et les outils dédiés}
 
 
+% -------------------------
+% --- DEBUT DU DOCUMENT ---
+% -------------------------
 \begin{document}
 
+% Page de garde :
 \begin{titlepage}
     \begin{center}
         \vspace*{1cm}
@@ -122,12 +185,15 @@
     \end{center}
 \end{titlepage}
 
+% Préface :
+\include{chapters/preface.tex}
 
-\include{preface.tex}
-
+% Table des matières :
 \tableofcontents
 
-\include{chapter_env_virtuals.tex}
-\include{chapter_virtualenv.tex}
+% Inclusion des chapitres :
+\include{chapters/chapter_env_virtuals.tex}
+\include{chapters/chapter_virtualenv.tex}
+\include{chapters/chapter_pip.tex}
 
 \end{document}
