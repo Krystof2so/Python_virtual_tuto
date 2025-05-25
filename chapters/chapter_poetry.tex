@@ -2,3 +2,1024 @@
 
 \insertcitation{La poésie est ce qu'il y a de plus réel, c'est ce qui n'est complètement vrai que dans un autre monde.}{Charles Baudelaire}
 \bigskip
+
+Dans le vaste écosystème du développement Python, la gestion des dépendances et des environnements virtuels peut rapidement devenir un casse-tête. C'est là que \textbf{poetry}\footnote{Site officiel : \url{https://python-poetry.org/}} entre en scène, se présentant comme une solution moderne et élégante pour simplifier ces tâches complexes. \textbf{Poetry} (disponible depuis la version \textbf{3.9} de Python) est bien plus qu'un simple gestionnaire de paquet, c'est un outil complet qui permet de gérer les dépendances, de créer des environnements virtuels, et de \textit{packager} des projets Python avec une facilité déconcertante.
+
+\textbf{Poetry} rend tout cela possible. En offrant une interface simple et puissante, \textbf{poetry} nous permet de nous concentrer sur ce qui compte vraiment : le développement de nos applications.
+
+Dans ce chapitre, nous allons explorer les multiples facettes de \textbf{poetry}. Nous commencerons par une introduction à ses fonctionnalités de base, puis nous plongerons dans des aspects plus avancés, tels que la gestion des environnements virtuels, la résolution des dépendances, et le packaging de projets. \textbf{poetry} a quelque chose à offrir pour rendre le flux de travail plus efficace et agréable.
+
+\section{Installation}
+\textbf{Poetry} est distribué comme un paquet Python lui-même, il est donc installable dans un environnement virtuel en utilisant \textbf{pip}, tout comme n’importe quel autre paquet externe :
+\begin{lstlisting}[style=terminal]
+(venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install poetry
+\end{lstlisting}
+
+C’est bien pour l’essayer rapidement. Cependant, la documentation officielle\footnote{\url{https://python-poetry.org/docs/\#installation}} déconseille fortement d’installer \textbf{Poetry} dans l'environnement virtuel d'un projet, car \textbf{Poetry} dépend de plusieurs paquets externes, et l'on courte le risque d’un conflit de dépendance entre l’une des dépendances du projet et celles requises par \textbf{Poetry}. En pratique, il faut donc garder \textbf{Poetry} séparé de tout environnement virtuel créé pour le projet Python. 
+
+Il est donc plus judicieux d'installer \textbf{Poetry} sur le système.
+
+\subsection*{Installation via \textit{pipx}}
+\textbf{Poetry} sera installé dans un environnement virtuel dédié qui ne sera pas partagé avec d’autres paquets Python. De plus, \textbf{pipx} définit un alias à l’exécutable \texttt{poetry} afin de pouvoir appeler \textbf{Poetry} depuis n’importe quel répertoire sans activer manuellement l’environnement virtuel associé.
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| pipx install poetry
+  installed package poetry 2.1.3, installed using Python 3.13.3
+  These apps are now globally available
+    - poetry
+done! 
+|\textcolor{terminalprompt}{user@machine: \$}| poetry --version
+Poetry (version 2.1.3)
+\end{lstlisting}
+
+Avec cette méthode d'installation, en tapant \texttt{poetry} dans le terminal on se réfère toujours au script exécutable installé dans son environnement virtuel isolé. La commande \texttt{poetry} lancée depuis l'environnement virtuel actif d'un projet, sera correctement captée par \textbf{Poetry}.
+
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| pipx upgrade poetry  # Pour une mise à jour
+|\textcolor{terminalprompt}{user@machine: \$}| pipx uninstall poetry  # Pour la désins
+    # tallation
+\end{lstlisting}
+
+\subsection*{Via l'installateur officiel}
+\textbf{Poetry} fournit un installateur personnalisé qui installe \textbf{Poetry} en l'isolant du reste du système. Exécuter la commande suivante :
+\begin{verbatim}
+$ curl -sSL https://install.python-poetry.org | python3 -
+Retrieving Poetry metadata
+
+\# Welcome to Poetry!
+
+This will download and install the latest version of Poetry,
+a dependency and package manager for Python.
+
+It will add the `poetry` command to Poetry's bin directory, located at:
+
+/home/krystof/.local/bin
+
+You can uninstall at any time by executing this script with the --uninstall 
+option, and these changes will be reverted.
+
+Installing Poetry (2.1.3): Done
+
+Poetry (2.1.3) is installed now. Great!
+
+You can test that everything is set up by executing:
+
+`poetry --version`
+\end{verbatim}
+
+Sous l’URL \texttt{install.python-poetry.org} se trouve un script Python multi-plateforme qui, plus ou moins, reproduit ce que fait \textbf{pipx}, mais d’une manière légèrement différente.
+
+\subsection*{Via un paquet système prédéfini}
+Certains systèmes d’exploitation peuvent proposer \textbf{Poetry} en tant que paquet natif. Par exemple, un système basé sur \textbf{Debian GNU/Linux} permet d’installer \textbf{Poetry} avec \texttt{apt} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| sudo apt install python3-poetry
+\end{lstlisting}
+
+Garder à l’esprit que la version de \textbf{Poetry} installée via un paquet système pourrait ne pas être la dernière. De plus, le paquet natif peut apporter plusieurs centaines de mégaoctets de dépendances supplémentaires (environ une cinquantaine de paquets système avec \textbf{Debian  GNU/Linux} \textit{testing}, comme un autre interpréteur Python, ce qui serait complètement inutile.
+
+\subsection*{Activer l'auto-complétion  pour \textit{Zsh}}
+Copier la configuration d'auto-complétion dans un fichier dédié :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry completions zsh > ~/.zfunc/_poetry
+\end{lstlisting}
+
+Puis, ajouter les lignes suivantes dans  \textbf{~/.zshrc}, si elles n'existent pas déjà :
+\begin{verbatim}
+    fpath+=~/.zfunc
+    autoload -Uz compinit && compinit
+\end{verbatim}
+
+\section{Débuter avec \textit{Poetry}}
+\subsection*{Création du projet}
+Création d'un projet \textbf{poetry} à l'aide de la commande \texttt{poetry new}\footnote{\url{https://python-poetry.org/docs/cli/\#new}} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry new mon_projet
+Created package mon_projet in mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| cd mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| tree
+\end{lstlisting}
+\begin{verbatim}
+.
+|-- pyproject.toml
+|-- README.md
+|-- src
+│   |-- mon_projet
+│       |-- __init__.py
+|-- tests
+    |-- __init__.py
+
+4 directories, 4 files
+\end{verbatim}
+
+Pour différencier le nom du projet du nom du paquetage Python, nous pouvons utiliser l'argument \texttt{--name} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry new mon_projet --name package_project
+Created package package_project in mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| cd mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| tree
+\end{lstlisting}
+\begin{verbatim}
+.
+|-- pyproject.toml
+|-- README.md
+|-- src
+│   |-- package_project
+│       |-- __init__.py
+|-- tests
+    |-- __init__.py
+
+4 directories, 4 files
+\end{verbatim}
+
+Nous obtenons une structure d'un projet de base sans avoir à réfléchir à l'organisation des fichiers Python.
+
+\subsection*{Inspecter la structure du projet}
+À l'intérieur du sous-répertoire \texttt{package\_project} se trouve un fichier \texttt{\_\_init\_\_.py} vide qui transforme le projet en un paquetage Python importable.
+
+De même, le sous-répertoire \texttt{tests/} est un autre paquetage Python destiné à contenir les tests unitaires (éventuellement d'autres types de tests).
+
+
+\textbf{Poetry} génère également un fichier \texttt{README} vide, ainsi qu'un fichier de configuration nommé \texttt{pyproject.toml} avec les métadonnées minimales requises pour le projet\footnote{Cf. le PEP 518 : \url{https://peps.python.org/pep-0518/}}
+
+\subsection*{\textit{pyproject.toml}}
+L'un des fichiers les plus importants pour travailler avec \textbf{Poetry} est le fichier \texttt{pyproject.toml} :
+\begin{verbatim}
+[project]
+name = "package-project"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "nom_dev",email = "mon_email@hebergeur.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "package_project", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+\end{verbatim}
+
+Nous voyons trois sections marquées par des crochets, appelées \og \textit{tables} \fg{} dans la terminologie \textbf{TOML}. Elles contiennent des instructions déclaratives que des outils comme \textbf{Poetry} peuvent reconnaître et utiliser pour gérer les dépendances, construire le projet ou effectuer d'autres tâches. Le point (\og . \fg{}) dans le nom d'une table \textbf{TOML} est un délimiteur, qui sépare les différents niveaux de la hiérarchie.
+
+
+Le fichier \texttt{pyproject.toml} commence par la table secondaire \texttt{[project]}, dans laquelle sont stockées des informations générales sur le projet. \textbf{Poetry} définit quelques clés de table dont certaines doivent toujours être spécifiées :
+\begin{description}
+    \item[name] : Le nom du paquet de distribution qui apparaîtra sur \textbf{PyPI}
+    \item[version] : La version du paquet
+    \item[description] : Une courte description du paquet
+    \item[authors] : Une liste d'auteurs avec le nom et l'email
+\end{description}
+
+La table \texttt{tool.poetry} contient des informations sur la structure du projet, les dépendances, et d'autres configurations nécessaires pour la gestion du projet avec \textbf{Poetry}. La section \texttt{packages} spécifie les packages inclus dans le projet. Dans l'exemple ci-dessus, le package \texttt{package\_project} est inclus et est situé dans le répertoire \texttt{src}.
+
+La table \texttt{build-system} est utilisée pour définir les exigences et le \textit{backend} de construction du projet. Elle est essentielle pour la construction et l'installation du package. La section \texttt{requires} liste les dépendances nécessaires pour construire le projet. La section \texttt{build-backend} spécifie le \textit{backend} de construction à utiliser qui est responsable de la construction du package et de la génération des artefacts de distribution (comme les fichiers \texttt{.whl} et \texttt{.tar.gz}).
+
+Au fur et à mesure que le projet grandit, le fichier \texttt{pyproject.toml} grandit avec lui. C'est particulièrement vrai pour la table secondaire \texttt{tool.poetry}.
+
+\section{Travailler avec \textit{Poetry}}
+\subsection*{Activer un environnement virtuel personnalisé}
+\textbf{Poetry} est livré avec un support intégré pour les environnements virtuels afin de s'assurer qu'il n'interfère jamais avec l'installation globale de Python. L'outil peut donc prendre en charge la majeure partie de la gestion des environnements virtuels.
+
+Cependant, \texttt{Poetry} ne crée pas d'environnement virtuel immédiatement lors de la création d'un nouveau projet. Cela a été conçu pour nous permettre de décider si nous souhaitons gérer nos environnements virtuels nous-même ou laisser \textbf{Poetry} les gérer automatiquement.
+
+\textbf{Poetry} détectera un environnement virtuel activé manuellement en exécutant la commande \textbf{Poetry} suivante directement dans le répertoire du projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv .venv/
+|\textcolor{terminalprompt}{user@machine: \$}| source .venv/bin/activate
+(.venv)|\textcolor{terminalprompt}{user@machine: \$}| poetry env info --path
+/home/utilisateur/mon_projet/.venv
+\end{lstlisting}
+
+En affichant les informations sur l'environnement, \textbf{Poetry} confirme qu'il utilisera cet environnement pour toutes les commandes ultérieures dans le cadre du projet. En d'autres termes, en ajoutant des dépendances au projet par l'intermédiaire de \textbf{Poetry}, elles seront installées dans l'environnement activé comme si nous utilisions la commande \texttt{pip install}. \textbf{Poetry} mettra également à jour les métadonnées nécessaires dans \texttt{pyproject.toml}.
+
+D'autre part, \textbf{Poetry} crée automatiquement un environnement virtuel lorsque nous exécuterons certaines commandes sans environnement activé dans le \textit{shell}. Ce sera le cas en ajoutant ou supprimant une dépendance à l'aide de l'interface de ligne de commande de \textbf{Poetry}. Cela empêche les projets de perturber l'installation de Python sur l'ensemble du système et garantit que les dépendances du projet restent isolées à tout moment.
+
+\subsection*{Utiliser les environnements virtuels de \textit{Poetry}}
+Lister tous les environnements virtuels que \textbf{Poetry} gère pour le projet en exécutant la commande suivante dans le répertoire du projet :
+\begin{lstlisting}[style=terminal]
+(.venv)|\textcolor{terminalprompt}{user@machine: \$}| poetry env list
+.venv (Activated)
+(.venv) |\textcolor{terminalprompt}{user@machine: \$}| deactivate
+|\textcolor{terminalprompt}{user@machine: \$}|  rm -Rf .venv/
+|\textcolor{terminalprompt}{user@machine: \$}|  poetry env list
+|\textcolor{terminalprompt}{user@machine: \$}| 
+\end{lstlisting}
+
+Dorénavant, \textbf{Poetry} se chargera de la création et de la gestion des environnements virtuels du projet lors de l'exécution de certaines de ses commandes.
+
+Pour mieux contrôler la création d'un environnement virtuel, il est possible d'indiquer explicitement à \textbf{Poetry} la version de Python souhaitée :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env use python3  # ou la version mineure : python3.13
+Creating virtualenv package-project-sCgEQKLZ-py3.13 in /home/utilisateur/.cache/pypoetry/virtualenvs
+Using virtualenv: /home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13
+\end{lstlisting}
+
+L'interpréteur Python indiqué à \textbf{Poetry} doit satisfaire la contrainte de version du fichier \texttt{pyproject.toml}. Dans le cas contraire, \textbf{Poetry} le rejettera avec un message d'erreur.
+
+\texttt{sCgEQKLZ} est une valeur de hachage encodée en \textit{Base64} du chemin menant au répertoire parent du projet. Elle lie le nom d'un environnement virtuel à l'emplacement du projet sur le disque.
+
+Ainsi, lorsque l'on déplace le projet dans un autre répertoire, \textbf{Poetry} le détecte et crée un nouvel environnement virtuel en arrière-plan si nécessaire. Grâce à la chaîne unique au milieu, \textbf{Poetry} peut gérer plusieurs projets avec des noms identiques et la même version de Python tout en conservant tous les environnements virtuels dans un seul dossier par défaut.
+
+Sauf indication contraire, \textbf{Poetry} crée les environnements virtuels dans le sous-répertoire \texttt{virtualenvs/} de son répertoire de cache, qui est spécifique au système d'exploitation. Sous \textbf{GNU/Linux} le chemin vers ce répertoire est \texttt{~/.cache/pypoetry/}.
+
+Pour révéler la configuration \textbf{Poetry} actuelle, qui comprend les paramètres \texttt{cache-dir} et \texttt{virtualenvs.path} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry config --list
+cache-dir = "/home/utilisateur/.cache/pypoetry"
+data-dir = "/home/utilisateur/.local/share/pypoetry"
+installer.max-workers = null
+installer.no-binary = null
+installer.only-binary = null
+installer.parallel = true
+installer.re-resolve = true
+keyring.enabled = true
+python.installation-dir = "{data-dir}/python"  # /home/utilisateur/.local/share/pypoetry/python
+requests.max-retries = 0
+solver.lazy-wheel = true
+system-git-client = false
+virtualenvs.create = true
+virtualenvs.in-project = null
+virtualenvs.options.always-copy = false
+virtualenvs.options.no-pip = false
+virtualenvs.options.system-site-packages = false
+virtualenvs.path = "{cache-dir}/virtualenvs"  # /home/utilisateur/.cache/pypoetry/virtualenvs
+virtualenvs.prompt = "{project_name}-py{python_version}"
+virtualenvs.use-poetry-python = false
+\end{lstlisting}
+
+Informations sur l'environnement du projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env info
+
+Virtualenv
+Python:         3.13.3
+Implementation: CPython
+Path:           /home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13
+Executable:     /home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/bin/python
+Valid:          True
+
+Base
+Platform:   linux
+OS:         posix
+Python:     3.13.3
+Path:       /usr
+Executable: /usr/bin/python3.13
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env info --path
+/home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env info --executable
+/home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/bin/python
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env list
+package-project-sCgEQKLZ-py3.13 (Activated)
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env list --full-path
+/home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13 (Activated)
+\end{listing}
+
+Supprimer l environnement virtuel du projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env remove 3.13
+Deleted virtualenv: /home/utilisateur/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env info
+
+Virtualenv
+Python:         3.13.3
+Implementation: CPython
+Path:           NA
+Executable:     NA
+
+Base
+Platform:   linux
+OS:         posix
+Python:     3.13.3
+Path:       /usr
+Executable: /usr/bin/python3.13
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env list
+|\textcolor{terminalprompt}{user@machine: \$}| 
+\end{lstlisting}
+
+Pour aller plus loin concernant la gestion des environnements : \url{https://python-poetry.org/docs/managing-environments/}
+
+\subsection*{Déclarer les dépendances d'exécution}
+Le fichier \texttt{pyproject.toml} est l'endroit où nous pouvons spécifier les paquets Python externes dont notre projet a besoin. L'éditer à la main n'installera rien dans l'environnement virtuel du projet, et c'est là que \textbf{Poetry} entre à nouveau en jeu en l'utilisant à l'instar de \textbf{pip}.
+
+L'exécution de la commande \texttt{poetry add} mettra automatiquement à jour le fichier \texttt{pyproject.toml} et installera le paquet en même temps. Il est également possible de spécifier plusieurs paquets en une seule fois :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add paquet1 paquet2
+\end{lstlisting}
+
+Imaginons vouloir installer le paquet \textbf{PySide6}\footnote{\url{https://doc.qt.io/qtforpython-6/}}. Il nous faudra apporter tout d'abord une modification au fichier \texttt{pyproject.toml}:
+\begin{verbatim}
+requires-python = ">=3.13, <3.14"
+\end{verbatim}
+
+Puis :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add pyside6
+Using version ^6.9.0 for pyside6
+
+Updating dependencies
+Resolving dependencies... (0.3s)
+
+Package operations: 4 installs, 0 updates, 0 removals
+
+  - Installing shiboken6 (6.9.0)
+  - Installing pyside6-essentials (6.9.0)
+  - Installing pyside6-addons (6.9.0): Installing...
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DAnimation.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DCore.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DExtras.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DInput.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DLogic.pyi over existing file
+[...]
+  - Installing pyside6-addons (6.9.0)
+  - Installing pyside6 (6.9.0): Installing...
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DAnimation.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DCore.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DExtras.pyi over existing file
+Installing /home/krystof/.cache/pypoetry/virtualenvs/package-project-sCgEQKLZ-py3.13/lib/python3.13/site-packages/PySide6/Qt3DInput.pyi over existing file
+[...]
+- Installing pyside6 (6.9.0)
+
+Writing lock file
+\end{lstlisting}
+
+Cela vient également apporter une modification au fichier \texttt{pyproject.toml}:
+\begin{verbatim}
+dependencies = [
+    "pyside6 (>=6.9.0,<7.0.0)"
+]
+\end{verbatim}
+
+Si l'on souhaite ajouter une version particulière d'un paquetage externe ou définir des contraintes de version personnalisées, \textbf{Poetry} le permet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add pyside6=6.8.3  # Versin compatible avec python3.13
+
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 4 updates, 0 removals
+
+  - Downgrading shiboken6 (6.9.0 -> 6.8.3)
+  - Downgrading pyside6-essentials (6.9.0 -> 6.8.3)
+  - Downgrading pyside6-addons (6.9.0 -> 6.8.3)
+  - Downgrading pyside6 (6.9.0 -> 6.8.3)
+
+Writing lock file
+\end{lstlisting}
+
+A noter que \textbf{Poetry} supprime d'abord toutes les versions précédemment installées de ces paquets et rétrograde leurs dépendances indirectes ou transitives si nécessaire. Il déterminera ensuite les versions les plus appropriées de ces paquets, en tenant compte des autres contraintes existantes pour résoudre les conflits potentiels.
+
+Nous aurions pu également demander l'installation de la version de \textbf{PySide6} inférieure à la version \textbf{6.9.0} (à notre l'utilisation des guillemets pour pas que le signe \og \texttt{<} \fg{} soit interprété comme opérateur de redirection) :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add "pyside6<6.9.0"
+
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 4 updates, 0 removals
+
+  - Downgrading shiboken6 (6.9.0 -> 6.8.3)
+  - Downgrading pyside6-essentials (6.9.0 -> 6.8.3)
+  - Downgrading pyside6-addons (6.9.0 -> 6.8.3)
+  - Downgrading pyside6 (6.9.0 -> 6.8.3)
+
+Writing lock file
+\end{lstlisting}
+
+Pour supprimer le paquet on utilisera la commande \texttt{remove} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry remove pyside6
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 0 updates, 4 removals
+
+  - Removing pyside6 (6.8.3)
+  - Removing pyside6-addons (6.8.3)
+  - Removing pyside6-essentials (6.8.3)
+  - Removing shiboken6 (6.8.3)
+
+Writing lock file
+\end{lstlisting}
+
+\subsection*{Dépendances de groupe et ajout d’extras}
+Une autre fonctionnalité intéressante de \textbf{Poetry} est la possibilité de gérer des groupes de dépendances, permettant ainsi de garder les dépendances logiquement liées séparées des dépendances d’exécution. Par exemple, pendant le développement, nous aurons souvent besoin de paquets supplémentaires, tels que des \textit{linters}, des \textit{checkers} de type ou des \textit{frameworks} de test, qui ne feraient qu’enfler le paquet final, mais qui n'aurons aucun intérêt pour les utilisateurs.
+
+\textbf{Poetry} offre la possibilité de grouper les dépendances sous des noms arbitraires de sorte que nous pouvons installer sélectivement ces groupes plus tard au besoin. Voici comment ajouter quelques dépendances à un groupe appelé \texttt{dev} et quelques dépendances à un autre groupe appelé \texttt{test} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add --group dev black flake8 isort 
+    mypy pylint
+Using version ^25.1.0 for black
+Using version ^7.2.0 for flake8
+Using version ^6.0.1 for isort
+Using version ^1.15.0 for mypy
+Using version ^3.3.7 for pylint
+
+Updating dependencies
+Resolving dependencies... (1.9s)
+
+Package operations: 17 installs, 0 updates, 0 removals
+
+  - Installing astroid (3.3.10)
+  - Installing click (8.1.8)
+  - Installing dill (0.4.0)
+  - Installing isort (6.0.1)
+  - Installing mccabe (0.7.0)
+  - Installing mypy-extensions (1.1.0)
+  - Installing packaging (25.0)
+  - Installing pathspec (0.12.1)
+  - Installing platformdirs (4.3.8)
+  - Installing pycodestyle (2.13.0)
+  - Installing pyflakes (3.3.2)
+  - Installing tomlkit (0.13.2)
+  - Installing typing-extensions (4.13.2)
+  - Installing black (25.1.0)
+  - Installing mypy (1.15.0)
+  - Installing flake8 (7.2.0)
+  - Installing pylint (3.3.7)
+
+Writing lock file
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add --group test pytest faker
+Using version ^8.3.5 for pytest
+Using version ^37.1.0 for faker
+
+Updating dependencies
+Resolving dependencies... (0.6s)
+
+Package operations: 5 installs, 0 updates, 0 removals
+
+  - Installing iniconfig (2.1.0)
+  - Installing pluggy (1.5.0)
+  - Installing tzdata (2025.2)
+  - Installing faker (37.1.0)
+  - Installing pytest (8.3.5)
+
+Writing lock file
+\end{lstlisting}
+
+Seront également ajoutées deux sous-tables supplémentaires dans le fichier \texttt{pyproject.toml}:
+\begin{verbatim}
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+flake8 = "^7.2.0"
+isort = "^6.0.1"
+mypy = "^1.15.0"
+pylint = "^3.3.7"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.5"
+faker = "^37.1.0"
+\end{verbatim}
+
+Il est aussi possible d"ajouter des paquets individuels en option pour laisser l’utilisateur choisir s’il veut les installer :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add --optional mysqlclient psycopg2-
+    binary
+poetry add --optional mysqlclient psycopg2-binary
+Using version ^2.9.10 for psycopg2-binary
+
+Updating dependencies
+Resolving dependencies... (0.3s)
+
+No dependencies to install or update
+
+Writing lock file
+\end{lstlisting}
+
+Les dépendances facultatives sont censées être disponibles à l’exécution lorsque explicitement demandées par l’utilisateur lors de l’installation. Il est courant de marquer les packages comme optionnels lorsqu’ils sont spécifiques à une plate-forme ou lorsqu’ils fournissent des fonctionnalités, telles qu’un adaptateur de base de données particulier, dont seuls certains utilisateurs auront besoin.
+
+Dans \texttt{pyproject.toml}, les dépendances optionnelles sont un peu plus détaillées :
+\begin{verbatim}
+[project.optional-dependencies]
+mysqlclient = ["psycopg2-binary (>=2.9.10,<3.0.0)"]
+\end{verbatim}
+
+Cependant, ce n’est pas suffisant pour exposer ces dépendances facultatives à l’utilisateur. On doit également définir des \textit{extras} dans le fichier \texttt{pyproject.toml}, qui sont des ensembles de dépendances optionnelles que les utilisateurs peuvent installer ensemble :
+\begin{verbatim}
+[tool.poetry.extras]
+databases = ["mysqlclient", "psycopg2-binary"]
+mysql = ["mysqlclient"]
+pgsql = ["psycopg2-binary"]
+\end{verbatim}
+
+\subsection*{Installer son package avec \textit{poetry}}
+Imaginons que nous venez de cloner un dépôt \textbf{Git} depuis \textbf{GitHub} et que nous redémarrions sans environnement virtuel. Pour simuler cela, nous pouvez supprimer certaines des métadonnées de \textbf{Poetry} et tout environnement virtuel associé au projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| rm poetry.lock
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env remove --all
+\end{lstlisting}
+
+Il nous suffira de saisir la commande suivante pour retrouver un environnement virtuel avec toutes les dépendances nécessaires installée :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| $ poetry install
+\end{lstlisting}
+
+\section{Gérer les dépendances}
+Chaque fois que l'on interagit avec \textbf{Poetry} le fichier \texttt{pyproject.toml} est mis à jour et les versions résolues sont épinglées dans le fichier \textbf{poetry.lock}.
+
+Repartons avec un nouveau projet, un nouvel environnement virtuel et de nouvelles dépendances :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry new mon_projet --name code_projet
+Created package code_projet in mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| cd mon_projet
+|\textcolor{terminalprompt}{user@machine: \$}| tree
+\end{lstlisting}
+\begin{verbatim}
+.
+├── pyproject.toml
+├── README.md
+├── src
+│   └── code_projet
+│       └── __init__.py
+└── tests
+    └── __init__.py
+
+4 directories, 4 files
+\end{verbatim}
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry env use 3.13
+Creating virtualenv code-projet-sCgEQKLZ-py3.13 in /home/utilisateur/.cache/pypoetry/virtualenvs
+Using virtualenv: /home/utilisateur/.cache/pypoetry/virtualenvs/code-projet-sCgEQKLZ-py3.13
+|\textcolor{terminalprompt}{user@machine: \$}|  poetry add requests beautifulsoup4
+Using version ^2.32.3 for requests
+Using version ^4.13.4 for beautifulsoup4
+
+Updating dependencies
+Resolving dependencies... (0.8s)
+
+Package operations: 8 installs, 0 updates, 0 removals
+
+  - Installing certifi (2025.4.26)
+  - Installing charset-normalizer (3.4.2)
+  - Installing idna (3.10)
+  - Installing soupsieve (2.7)
+  - Installing typing-extensions (4.13.2)
+  - Installing urllib3 (2.4.0)
+  - Installing beautifulsoup4 (4.13.4)
+  - Installing requests (2.32.3)
+
+Writing lock file
+\end{lstlisting}
+
+\subsection*{Verrouiller manuellement les dépendances}
+\textbf{Poetry} génère et rafraîchit le fichier \texttt{poetry.lock} lorsque nécessaire. Ce fichier de verrouillage n'est pas destiné à être modifié manuellement, mais nous pouvons éditer le fichier \texttt{pyproject.toml} associé. Malheureusement, cela peut parfois entraîner un décalage entre les deux fichiers.
+
+Note : Si nous insistons pour manipuler manuellement le fichier \texttt{poetry.lock}, nous allons probablement invalider les hachages sous-jacents, rendant le fichier cassé et inutilisable.
+
+Supposons que nous voulions ramener la bibliothèque \textbf{requests} que nous avons retiré du projet. 
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry remove requests
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 0 updates, 5 removals
+
+  - Removing certifi (2025.4.26)
+  - Removing charset-normalizer (3.4.2)
+  - Removing idna (3.10)
+  - Removing requests (2.32.3)
+  - Removing urllib3 (2.4.0)
+
+Writing lock file
+\end{lstlisting}
+
+Nous pouvons éditer le fichier \texttt{pyproject.toml} pour y saisir la déclaration nécessaire dans le groupe principal des dépendances. D'abord nous ajoutons dans le fichier à \texttt{dependencies}, la ligne : \texttt{\og requests\fg{},}. Puis lancer :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry install
+Installing dependencies from lock file
+
+pyproject.toml changed significantly since poetry.lock was last generated. Run `poetry lock` to fix the lock file.
+\end{lstlisting}
+
+Dans ce cas, \textbf{Poetry} refuse d’installer les dépendances le fichier \texttt{poetry.lock} ne mentionne pas la bibliothèque \textbf{Requests} présente dans le fichier \texttt{pyproject.toml} associé.
+
+Pour corriger une telle divergence, nous pouvons supprimer le fichier de verrouillage et exécuter \texttt{poetry install} à nouveau pour permettre à \textbf{Poetry} de résoudre toutes les dépendances à partir de zéro. Mais cela est potentiellement long. Mais pire encore, seront ignorées les versions spécifiques des dépendances précédemment résolues, supprimant la garantie de compilations reproductibles.
+
+Une approche bien meilleure pour aligner les deux fichiers consiste à verrouiller manuellement les nouvelles dépendances avec la commande \texttt{poetry lock} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry lock
+Resolving dependencies... (0.5s)
+
+Writing lock file
+\end{lstlisting}
+
+Cela met à jour le fichier \texttt{poetry.lock} pour qu’il corresponde au fichier \texttt{pyproject.toml} actuel sans installer de dépendances.
+
+\textbf{Poetry} traite toutes les dépendances dans le fichier \texttt{pyproject.toml}, trouve les paquets qui satisfont aux contraintes déclarées et épingle leurs versions exactes dans le fichier de verrouillage. Mais \textbf{poetry} ne s’arrête pas là car lorsque nous exécutons \texttt{poetry lock}, il analyse et verrouille récursivement toutes les dépendances directes.
+
+\subsection*{Synchroniser son environnement}
+Lorsque le fichier \texttt{poetry.lock} correspond à son homologue \texttt{pyproject.toml}, nous pouvons enfin installer les dépendances que \textbf{Poetry} a verrouillé :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry install
+Installing dependencies from lock file
+
+Package operations: 5 installs, 0 updates, 0 removals
+
+  - Installing certifi (2025.4.26)
+  - Installing charset-normalizer (3.4.2)
+  - Installing idna (3.10)
+  - Installing urllib3 (2.4.0)
+  - Installing requests (2.32.3)
+
+Installing the current project: code-projet (0.1.0)
+\end{lstlisting}
+
+En exécutant \texttt{poetry install}, le fichier \texttt{poetry.lock} et sont installées toutes les dépendances qui y sont listées. Comme l'environnement virtuel avait déjà la plupart des dépendances requises en place, \textbf{Poetry} n’a installé que les dépendances manquantes. Et si on exécute à nouveau la même commande, \textbf{Poetry} n’aura plus grand-chose à faire :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry install
+Installing dependencies from lock file
+
+No dependencies to install or update
+
+Installing the current project: code-projet (0.1.0)
+\end{lstlisting}
+
+Par conséquent, la bibliothèque \textbf{requests} sera disponible lorsqu'elle est importée dans une session interactive REPL de Python démarrée via \textbf{Poetry} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry run python -q  # -q supprime le message de bienvenue
+\end{lstlisting}
+
+\begin{verbatim}
+>>> import requests
+>>> requests.__version__
+'2.32.3'
+\end{verbatim}
+
+Synchroniser l'environnement virtuel avec les paquets verrouillés et épinglés dans le fichier \texttt{poetry.lock} : 
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry sync
+\end{lstlisting}
+
+Cela garantit que l'environnement virtuel ne contient que les paquets spécifiés dans les fichiers \texttt{pyproject.toml} et \texttt{poetry.lock}, évitant ainsi les conflits potentiels causés par des dépendances inutiles ou obsolètes.
+
+\subsection*{Mise à jour et mise à niveau des dépendances}
+Imaginons un projet avec \textbf{Pyside6} version \textbf{6.8.3} d'installé. Comparons les dépendances verrouillées avec leurs dernières versions sur \textbf{PyPI} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry show --latest
+pyside6            6.8.3 6.9.0 Python bindings for the Qt cross-platform application and UI framework
+pyside6-addons     6.8.3 6.9.0 Python bindings for the Qt cross-platform application and UI framework (Addons)
+pyside6-essentials 6.8.3 6.9.0 Python bindings for the Qt cross-platform application and UI framework (Essentials)
+shiboken6          6.8.3 6.9.0 Python/C++ bindings helper module
+\end{lstlisting}
+
+Il semble qu'une mise à jour s'impose :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry update --dry-run  
+    # Pour simuler la mise à jour
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 0 updates, 0 removals, 4 skipped
+
+  - Installing pyside6 (6.8.3): Skipped for the following reason: Already installed
+  - Installing pyside6-addons (6.8.3): Skipped for the following reason: Already installed
+  - Installing pyside6-essentials (6.8.3): Skipped for the following reason: Already installed
+  - Installing shiboken6 (6.8.3): Skipped for the following reason: Already installed
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry update  # Pour tous les paquets
+|\textcolor{terminalprompt}{user@machine: \$}| poetry update paquet1 paquet2  # Seulement les paquets indiqués
+\end{lstlisting}
+
+Avec cette commande, \textbf{Poetry} recherchera une nouvelle version des paquets qui répondent aux contraintes de version listées dans le fichier \texttt{pyproject.toml}. Ensuite, il résoudra toutes les dépendances du projet et épinglera leurs versions dans le fichier \texttt{poetry.lock}. 
+
+Normalement, pour mettre à niveau une dépendance vers une version qui est en dehors des contraintes de version déclarées dans le fichier \texttt{pyproject.toml}, nous devons ajuster ce fichier au préalable. Sinon, nous pouvons mettre à niveau une dépendance vers sa dernière version en exécutant la commande \texttt{poetry add} avec l’opérateur \texttt{at} (\texttt{@}) et le mot-clé \texttt{latest} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add pyside6@latest
+Using version ^6.9.0 for pyside6
+
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 0 installs, 4 updates, 0 removals
+
+  - Updating shiboken6 (6.8.3 -> 6.9.0)
+  - Updating pyside6-essentials (6.8.3 -> 6.9.0)
+  - Updating pyside6-addons (6.8.3 -> 6.9.0)
+  - Updating pyside6 (6.8.3 -> 6.9.0)
+
+Writing lock file
+\end{lstlisting}
+
+\subsection*{Comparer \texttt{pyproject.toml} et \texttt{poetry.lock}}
+
+Les contraintes de version des dépendances déclarées dans le fichier \texttt{pyproject.toml} peuvent être assez lâches. Cela permet un certain niveau de flexibilité lors de l’intégration des corrections de bogues ou de la résolution des conflits de version. En ayant plus de versions de paquets à choisir, \textbf{Poetry} est davantage susceptible de trouver une combinaison de dépendances compatibles.
+
+D’autre part, \textbf{Poetry} suit les versions exactes des dépendances utilisées dans le fichier \texttt{poetry.lock}. Cela améliore les performances de \textbf{Poetry} en mettant en cache les versions des paquets résolus afin qu’il n’ait pas à les résoudre à nouveau chaque fois que l'on installe ou met à jour des dépendances.
+
+Pour garantir des environnements reproductibles dans une équipe, il est nécessaire d'envisager de transférer le fichier \texttt{poetry.lock} au système de contrôle de version. En gardant ce fichier suivi nous nous assurons que tous les développeurs utiliseront des versions identiques des packages requis.
+
+Cependant, il y a une exception notable. Lorsque l'on développe une bibliothèque plutôt qu’une application, il est courant de ne pas \textit{commiter} le fichier \texttt{poetry.lock}. Les bibliothèques doivent généralement rester compatibles avec plusieurs versions de leurs dépendances plutôt qu’avec un seul ensemble verrouillé.
+
+\section{Ajouter \textit{poetry} à un projet existant}
+\subsection*{Convertir un répertoire en projet \textbf{poetry}}
+Au lieu d’utiliser la commande \texttt{poetry new}, nous utiliserons la commande \texttt{poetry init} dans le répertoire du projet.
+
+Voici la structure d'un projet situé dans un répertoire nommé \texttt{PyCalendar} :
+\begin{verbatim}
+.
+|── IMG
+|   |── PyCalendar.png
+|── main.py
+|── README.md
+|── requirements.txt
+\end{verbatim}
+
+Il est composé d'un fichier \texttt{PyCalendar.png} appelé depuis le fichier \texttt{README.md}, et d'un fichier Python nommé \texttt{main.py}. Ce projet fait appel au \textit{framework} \textbf{PySide6}, comme le précise le fichier \texttt{requirements.txt} :
+\begin{verbatim}
+PySide6==6.9.0
+PySide6_Addons==6.9.0
+PySide6_Essentials==6.9.0
+shiboken6==6.9.0
+\end{verbatim}
+
+Initialisation du projet :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry init
+
+This command will guide you through creating your pyproject.toml config.
+
+Package name [pycalendar]:
+Version [0.1.0]:
+Description []:
+Author [Nom dev <LeDev@email.com>, n to skip]:
+License []:
+Compatible Python versions [>=3.13]:
+
+Would you like to define your main dependencies interactively? (yes/no) [yes]
+        You can specify a package in the following forms:
+          - A single name (requests): this will search for matches on PyPI
+          - A name and a constraint (requests@^2.23.0)
+          - A git url (git+https://github.com/python-poetry/poetry.git)
+          - A git url with a revision         (git+https://github.com/python-poetry/poetry.git#develop)
+          - A file path (../my-package/my-package.whl)
+          - A directory (../my-package/)
+          - A url (https://example.com/packages/my-package-0.1.0.tar.gz)
+
+Package to add or search for (leave blank to skip):
+
+Would you like to define your development dependencies interactively? (yes/no) [yes]
+Package to add or search for (leave blank to skip):
+
+Generated file
+
+[project]
+name = "pycalendar"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Nom dev",email = "LeDev@email.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+Do you confirm generation? (yes/no) [yes]
+|\textcolor{terminalprompt}{user@machine: \$}| 
+\end{lstlisting}
+
+La commande \textbf{poetry init} recueille les informations nécessaires pour générer un fichier \texttt{pyproject.toml} en posant des questions de manière interactive. Les valeurs par défaut sont raisonnables pour la plupart des configurations et l'on peut donc systématiquement appuyer sur Entrée pour les accepter, y compris sans déclarer de dépendances.
+
+Nous pouvons ensuite réorganiser notre structure de projet comme cela :
+\begin{verbatim}
+|── IMG
+|   |── PyCalendar.png
+|── pyproject.toml
+|── README.md
+|── requirements.txt
+|── src
+    |── pycalendar
+        |── main.py
+\end{verbatim}
+
+Maintenant nous pouvons utiliser toutes les commandes que \textbf{Poetry} offre. Exécutons notre script :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry run python src/pycalendar/main.py
+Creating virtualenv pycalendar-zCgC7Sg9-py3.13 in /home/utilisateur/.cache/pypoetry/virtualenvs
+Traceback (most recent call last):
+  File "/home/utilisateur/PyCalendar/src/pycalendar/main.py", line 4, in <module>
+    from PySide6.QtCore import QSize, Qt
+ModuleNotFoundError: No module named 'PySide6'
+\end{lstlisting}
+
+Comme \textbf{Poetry} n’a pas trouvé d’environnement virtuel à utiliser, il en a créé un nouveau avant d’exécuter le script. Mais par la suite, le module \textbf{PySide6} n'a pas été trouvé. Il va donc nous falloir l'installer.
+
+\subsection*{Importer des dépendances}
+Si le projet contient déjà un fichier d'exigences (\texttt{requirements.txt}), nous allons pouvoir l'importer :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add |\$|(cat requirements.txt)
+
+Updating dependencies
+Resolving dependencies... (0.0s)
+
+The current project s supported Python range (>=3.13) is not compatible with some of the required packages Python requirement:
+  - pyside6 requires Python <3.14,>=3.9, so it will not be installable for Python >=3.14
+
+Because pycalendar depends on pyside6 (6.9.0) which requires Python <3.14,>=3.9, version solving failed.
+
+  * Check your dependencies Python requirement: The Python requirement can be specified via the `python` or `markers` properties
+
+    For pyside6, a possible solution would be to set the `python` property to ">=3.13,<3.14"
+
+    https://python-poetry.org/docs/dependency-specification/#python-restricted-dependencies,
+    https://python-poetry.org/docs/dependency-specification/#using-environment-markers
+\end{lstlisting}
+
+Il nous faut finalement mettre en adéquation les exigences du paquet et du projet. Modifions simplement les exigences de Python dans \texttt{pyproject.toml}:
+\begin{verbatim}
+[...]
+requires-python = ">=3.13, <3.14"
+[...]
+\end{verbatim}
+
+Et relançons :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry add $(cat requirements.txt)
+\end{lstlisting}
+
+L’utilitaire \texttt{cat} lit le fichier spécifié et écrit son contenu dans le flux de sortie standard. Ce contenu est passé à la commande \texttt{poetry add}, ce qui permet d'installer chaque dépendance répertoriée dans le fichier \texttt{requirements.txt} au niveau du projet \textbf{Poetry}.
+
+Le fichier \texttt{pyproject.toml} s'est vu ajouté les lignes suivantes :
+\begin{verbatim}
+dependencies = [
+    "pyside6 (==6.9.0)",
+    "pyside6-addons (==6.9.0)",
+    "pyside6-essentials (==6.9.0)",
+    "shiboken6 (==6.9.0)"
+]
+\end{verbatim}
+
+Mais il est vrai que toutes les dépendances sont lissées, alors que si nous avions créé le projet directement avec \textbf{poetry}, puis installé directement nos dépendances, nous aurions simplement :
+\begin{verbatim}
+dependencies = [
+    "pyside6 (==6.9.0)"
+]
+\end{verbatim}
+
+Mais \textbf{Poetry} résoudra cette structure des dépendances en les verrouillant dans le fichier \texttt{poetry.lock} correspondant. Visualisation de cette structure des dépendances :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry show --tree
+\end{lstlisting}
+\begin{verbatim}
+pyside6 6.9.0 Python bindings for the Qt cross-platform application and UI 
+      framework
+|-- pyside6-addons 6.9.0
+|   |-- pyside6-essentials 6.9.0
+|   |   |-- shiboken6 6.9.0
+|   |-- shiboken6 6.9.0 (circular dependency aborted here)
+|-- pyside6-essentials 6.9.0
+|   |-- shiboken6 6.9.0
+|-- shiboken6 6.9.0
+pyside6-addons 6.9.0 Python bindings for the Qt cross-platform application 
+      and UI framework (Addons)
+|-- pyside6-essentials 6.9.0
+|   |-- shiboken6 6.9.0
+|-- shiboken6 6.9.0
+pyside6-essentials 6.9.0 Python bindings for the Qt cross-platform 
+      application and UI framework (Essentials)
+|-- shiboken6 6.9.0
+shiboken6 6.9.0 Python/C++ bindings helper module
+\end{verbatim}
+
+\subsection*{Exporter les dépendances depuis \textbf{Poetry}}
+\textbf{Poetry} permet également de produire un fichier \texttt{requirements.txt} via la commande \texttt{pip freeze} traditionnelle :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry run python -m pip freeze > requirements
+    .txt
+\end{lstlisting}
+
+Cela est également possible par l'intermédiaire du \textit{plugin} \textbf{Export}\footnote{\url{https://pypi.org/project/poetry-plugin-export/}} de \textbf{Poetry}, qui permet essentiellement d’exporter les dépendances de \texttt{poetry.lock} vers divers formats de fichiers, y compris \texttt{requirements.txt}.
+
+Selon la façon dont vous avez installé \textbf{Poetry}, voici le choix des commandes pour installer le \textit{plugin} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry self add poetry-plugin-export
+|\textcolor{terminalprompt}{user@machine: \$}|  pipx inject poetry poetry-plugin-export
+|\textcolor{terminalprompt}{user@machine: \$}|  python -m pip install poetry-plugin-export
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| pipx inject poetry poetry-plugin-export
+  injected package poetry-plugin-export into venv poetry
+done! 
+\end{lstlisting}
+
+Export des dépendances du projet dans un fichier \texttt{requirements.txt} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry export --output requirements.txt
+\end{lstlisting}
+
+Et voici le nouveau fichier \texttt{requirements.txt} :
+\begin{verbatim}
+pyside6-addons==6.9.0 ; python_version == "3.13" \
+    --hash=sha256:260a56da59539f476c1635a3ff13591e10f1b04d92155c0617129bc
+    53ca8b5f8 \
+    --hash=sha256:8cf54065b3d1b4698448fad825378a25c10ef52017d9dff48cead03
+    200636d8d \
+    --hash=sha256:98f9ad4b65820736e12d49c18db2e570eac63727407fbb59a62ac75
+    3e89dc201 \
+    --hash=sha256:d8a650644e0b9d1e7a092f6bcd11f25a63706d12f77d442b6ace75d
+    346ab5d30 \
+    --hash=sha256:fc9dcd63a0ce7565f238cb11c44494435a50eb6cb72b8dbce3b7096
+    18989c3dc
+pyside6-essentials==6.9.0 ; python_version == "3.13" \
+    --hash=sha256:45eaf7f17688d1991f39680dbfd3c41674f3cbb78f278aa10fe0b5f
+    2f31c1989 \
+    --hash=sha256:69aedfad77119c5bec0005ca31d5620e9bac8ba5ae66c7389160530
+    cfd698ed8 \
+    --hash=sha256:94a0096d6bb1d3e5cef29ca4a5366d0f229d42480fbb17aa25ad85d
+    72b1b7947 \
+    --hash=sha256:b18e3e01b507e8a57481fe19792eb373d5f10a23a50702ce540da14
+    35e722f39 \
+    --hash=sha256:d2dc45536f2269ad111991042e81257124f1cd1c9ed5ea778d7224f
+    d65dc9e2b
+pyside6==6.9.0 ; python_version == "3.13" \
+    --hash=sha256:0103e5d161696db40d75bfbf4e4b7d4f3372903c1b400c4e3379377
+    b62c50290 \
+    --hash=sha256:09239d1b808f18efccd3803db874d683917efcdebfdf0e8dec449cf
+    50e74e7aa \
+    --hash=sha256:1a176409dd0dd12b72d2c78b776e5051f569071ec52b7aaadd0a5b3
+    333493c24 \
+    --hash=sha256:846fbccf0b3501eb31cf0791a46e137615efba6ce540da2b426d79f
+    a3e7762c4 \
+    --hash=sha256:b8f286a1bd143f3b2bdf08367b9362b13f469d26986c25700af9c4c
+    68f79213e
+shiboken6==6.9.0 ; python_version == "3.13" \
+    --hash=sha256:121ea290ed1afa5ad6abf690b377612693436292b69c61b0f8e10b1
+    f0850f935 \
+    --hash=sha256:24f53857458881b54798d7e35704611d07f6b6885bcdf80f13a4c8b
+    b485b8df2 \
+    --hash=sha256:3f585caae5b814a7e23308db0a077355a7dc20c34d58ca4c339ff76
+    25e9a1936 \
+    --hash=sha256:b61579b90bf9c53ecc174085a69429166dfe57a0b8b894f933d1281
+    af9df6568 \
+    --hash=sha256:c4d8e3a5907154ac4789e52c77957db95bcf584238c244d7743cb39
+    e9b66dd26
+\end{verbatim}
+
+Le fichier résultant inclut par défaut des hachages et des marqueurs d’environnement, ce qui signifie que nous pouvons travailler avec des exigences très strictes qui ressemblent au contenu du fichier \texttt{poetry.lock}.
+
+Si dans un fichier \texttt{requirements.txt} on souhaite y ajouter des dépendances de groupes facultatifs (par exemple \textbf{dev} et \textbf{test}) :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry export --output requirements.txt --with
+    dev,test
+\end{lstlisting}
+
+Pour visualiser les options possibles du \textit{plugin} :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry export --help
+\end{lstlisting}
+
+\section{Les principales commandes de \textbf{Poetry}}
+
+\begin{center}
+\begin{table}[h!]
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Commande} & \textbf{Description} \\ \hline
+\verb|$ poetry --version| & Montre la version \textbf{Poetry}. \\ \hline
+\verb|$ poetry new| & Créer un nouveau projet \textbf{Poetry}. \\ \hline
+\verb|$ poetry init| & Ajoute \textbf{Poetry} à un projet existant. \\ \hline
+\verb|$ poetry run| & Exécuter une commande dans un environnement virtuel géré par \textbf{Poetry}. \\ \hline
+\verb|$ poetry add| & Ajoute un paquet à \verb|pyproject.toml| et l'installe. \\ \hline
+\verb|$ poetry update| & Mise à jour des dépendances du projet. \\ \hline
+\verb|$ poetry install| & Installe les dépendances. \\ \hline
+\verb|$ poetry show| & Liste les paquets installés. \\ \hline
+\verb|$ poetry lock| & Épingle la dernière version des dépendances dans le fichier \verb|poetry.lock|. \\ \hline
+\verb|$ poetry lock --no-update| & Actualise le fichier \verb|poetry.lock| sans mettre à jour aucune version de dépendance. \\ \hline
+\verb|$ poetry check| & Valide \verb|pyproject.toml|. \\ \hline
+\verb|$ poetry config --list| & Montre la configuration de \textbf{Poetry}. \\ \hline
+\verb|$ poetry env list| & Liste les environnements virtuels du projet. \\ \hline
+\verb|$ poetry export| & Exporte \verb|poetry.lock| vers d'autres formats. \\ \hline
+\end{tabularx}
+\end{table}
+\end{center}
+
+Pour obtenir la liste de toutes les commandes :
+\begin{lstlisting}[style=terminal]
+|\textcolor{terminalprompt}{user@machine: \$}| poetry list
+\end{lstlisting}
+
+\textbf{Poetry} peut également aider à construire et publier des paquets Python\footnote{Voir \og \textit{Comment publier un paquet Python open-source vers PyPI}\fg{} : \url{https://realpython.com/pypi-publish-python-package/\#poetry}}.
+\bigskip
+
+\begin{center}
+    \pgfornament[width=0.3\textwidth]{87} % 87 est le numéro de l'ornement
+\end{center}
+
+Grâce à \textbf{poetry}, nous pouvons désormais gérer nos dépendances avec précision et fluidité, nous permettant de nous concentrer sur l'essentiel.
+
+Cependant, le paysage des outils de développement Python ne cesse d'évoluer, et de nouvelles solutions émergent pour répondre aux divers besoins des développeurs. C'est pourquoi, dans le chapitre suivant, nous nous plongerons dans les fonctionnalités de \textbf{uv} et découvrirons comment cet outil peut compléter et enrichir notre boîte à outils de développement Python. 
+
