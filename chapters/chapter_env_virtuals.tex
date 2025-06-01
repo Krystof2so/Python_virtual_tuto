@@ -200,37 +200,36 @@ Cette connexion ne fonctionne que dans une seule direction, car les nouveaux paq
 \section{Fonctionnement d'un environnement virtuel}
 
 Lorsque l'on crée un environnement virtuel à l’aide de \textbf{venv}, le module recrée la structure des fichiers et répertoires d’une installation standard de Python présente sur le système. Python copie également dans le répertoire l’exécutable Python avec lequel nous avons appelé \textbf{venv} :
-\begin{verbatim}
+\begin{lstlisting}[style=tree]
 venv/
-│
-|── bin/
-│   |── Activate.ps1
-│   |── activate
-│   |── activate.csh
-│   |── activate.fish
-│   |── pip
-│   |── pip3
-│   |── pip3.13
-│   |── python
-│   |── python3
-│   |── python3.13
-│
-|── include/
-│
-|── lib/
-│   │
-│   |── python3.13/
-│       │
-│       |── site-packages/
-│
-|── lib64/
-│   │
-│   |── python3.13/
-│       │
-│       |── site-packages/
-│
-|── pyvenv.cfg
-\end{verbatim}
+|\textbar|
+|\textbar|-- bin/
+|\textbar|   |\textbar|-- Activate.ps1
+|\textbar|   |\textbar|-- activate
+|\textbar|   |\textbar|-- activate.csh
+|\textbar|   |\textbar|-- activate.fish
+|\textbar|   |\textbar|-- pip
+|\textbar|   |\textbar|-- pip3
+|\textbar|   |\textbar|-- pip3.13
+|\textbar|   |\textbar|-- python
+|\textbar|   |\textbar|-- python3
+|\textbar|   |\textbar|-- python3.13
+|\textbar|
+|\textbar|-- include/
+|\textbar|
+|\textbar|-- lib/
+|\textbar|   |\textbar|-- python3.13/
+|\textbar|        |\textbar|
+|\textbar|        |\textbar|-- site-packages
+|\textbar|
+|\textbar|-- lib64/
+|\textbar|   |\textbar|
+|\textbar|   |\textbar|-- python3.13/
+|\textbar|        |\textbar|
+|\textbar|        |\textbar|-- site-packages/
+|\textbar|
+|\textbar|-- pyvenv.cfg
+\end{lstlisting}
 
 Cette structure ressemble à celle que l'on retrouve au niveau du système d'exploitation. \textbf{venv} crée cette structure de répertoires pour s’assurer que Python fonctionnera comme prévu en isolation, sans avoir besoin d’appliquer des modifications supplémentaires. 
 
@@ -244,22 +243,22 @@ L'interpréteur Python dans un environnement virtuel créé avec \textbf{venv} c
 Si \texttt{pyvenv.cfg} n'est pas trouvé, l'interpréteur détermine qu'il n'est pas dans un environnement virtuel, et \texttt{sys.base\_prefix} et \texttt{sys.prefix} pointent vers le même chemin.
 
 Dans l'environnement virtuel :
-\begin{verbatim}
-    >>> import sys
-    >>> sys.base_prefix
-    '/usr'
-    >>> sys.prefix
-    '/home/chemin/vers/venv'
-\end{verbatim}
+\begin{lstlisting}[style=repl]
+|\pythonprompt| import sys
+|\pythonprompt| sys.base_prefix
+'/usr'
+|\pythonprompt| sys.prefix
+'/home/chemin/vers/venv'
+\end{lstlisting}
 
 En dehors de l'environnement virtuel :
-\begin{verbatim}
-    >>> import sys
-    >>> sys.base_prefix
-    '/usr'
-    >>> sys.prefix
-    '/usr'
-\end{verbatim}
+\begin{lstlisting}[style=repl]
+|\pythonprompt| import sys
+|\pythonprompt| sys.base_prefix
+'/usr'
+|\pythonprompt|sys.prefix
+'/usr'
+\end{lstlisting}
 
 Ainsi, un environnement virtuel Python dans sa forme la plus simple n'est rien de plus qu’une copie ou un lien symbolique du binaire Python accompagné d’un fichier \texttt{pyvenv.cfg} et d’un répertoire \texttt{site-packages}. 
 
@@ -270,27 +269,27 @@ Le renvoi vers la bibliothèque standard permet d'obtenir un environnement virtu
 Pour s’assurer que les scripts que nous voulons exécuter utilisent l’interpréteur Python dans notre environnement virtuel, \textbf{venv} modifie la variable d’environnement \texttt{PYTHONPATH} (voir les différences de résultat de l'instruction \texttt{sys.path} dans l'environnement virtuel et en dehors de cet environnement). Ce changement dans les paramètres de chemin de Python crée effectivement l’isolement des paquets externes dans l'environnement virtuel.
 
 Pour lancer un interpréteur Python dans l'environnement virtuel, de la même manière que si nous l'avions activé au préalable :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| /home/chemin/vers/venv/bin/python
+\begin{lstlisting}[style=bash]
+|\userprompt| /home/chemin/vers/venv/bin/python
 \end{lstlisting}
 
 Pour vérifier que l'interpréteur pointe bien vers l'environnement virtuel  et vers l'exécutable Python idoine:
-\begin{verbatim}
-    >>> from sys import prefix, executable
-    >>> prefix
-    /home/chemin/vers/venv
-    >>> executable
-    /home/chemin/vers/venv/bin/python
-\end{verbatim}
+\begin{lstlisting}[style=repl]
+|\pythonprompt| from sys import prefix, executable
+|\pythonprompt| prefix
+/home/chemin/vers/venv
+|\pythonprompt| executable
+/home/chemin/vers/venv/bin/python
+\end{lstlisting}
 
 Tant que nous fournissons le chemin d'accès à notre exécutable Python, nous n'avons pas besoin d'activer notre environnement virtuel pour profiter des avantages qu'il offre.
 
 \section{Personnaliser un environnement virtuel}
 \subsection*{Écraser un environnement virtuel et le remplacer par un autre}
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/
-|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip install requests
-|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip list
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/
+|\userprompt| python3 venv/bin/pip install requests
+|\userprompt| python3 venv/bin/pip list
 Package            Version
 -------            -------
 certifi            2025.1.31
@@ -299,8 +298,8 @@ idna               3.10
 pip                25.0.1
 requests           2.32.3
 urllib3            2.4.0
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --clear
-|\textcolor{terminalprompt}{user@machine: \$}| python3 venv/bin/pip list
+|\userprompt| python3 -m venv venv/ --clear
+|\userprompt| python3 venv/bin/pip list
 Package            Version
 -------            -------
 pip                25.0.1
@@ -310,8 +309,8 @@ Si l'option \texttt{--clear} n'est pas précisée, et qu'un environnement virtue
 
 \subsection*{Créer plusieurs environnements virtuels en une seule fois}
 Si un seul environnement virtuel ne suffit pas, il est possible d'en créer plusieurs distincts en une seule fois en indiquant plusieurs chemins d'accès à la commande :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ /chemin/venv-copy
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/ /chemin/venv-copy
 \end{lstlisting}
 
 Il est tout à fait possible de créer autant d'environnements virtuels que de chemins indiqués (chemins séparés par un espace).
@@ -320,33 +319,33 @@ Il est tout à fait possible de créer autant d'environnements virtuels que de c
 Lorsque l'on crée un environnement virtuel à l'aide de \textbf{venv} avec ses paramètres par défaut et que l'on installe ensuite un paquetage externe à l'aide de \textbf{pip}, nous pouvons rencontrer un message indiquant que l'installation de \textbf{pip} est obsolète. En fait \textbf{pip} se connecte à \textbf{PyPI}\footnote{\url{https://pypi.org/}} et identifie également si \textbf{pip} lui-même est obsolète, et si tel est le cas la commande affiche l'avertissement d'obsolescence.  Il est alors préférable de disposer de la dernière version de \textbf{pip} pour éviter les problèmes de sécurité ou les bogues qui pourraient subsister dans une version plus ancienne. Pour un environnement virtuel existant, nous pouvons suivre les instructions que \textbf{pip} imprime dans le terminal pour une mise à jour.
 
 Pour créer un environnement virtuel en demandant une mise à jour automatique de \textbf{pip} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --upgrade-deps
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/ --upgrade-deps
 \end{lstlisting}
 
 \subsection*{Éviter d'installer \textit{pip}}
 Dans la plupart des cas, nous voudrons que \textbf{pip} soit installé dans notre environnement virtuel car il nous servira pour installer des paquets externes provenant de \textbf{PyPI}. Cependant, si nous n'avons pas besoin de \textbf{pip}, nous pouvons utiliser \texttt{--without-pip} pour créer un environnement virtuel sans \textbf{pip}, ce qui ne créera que la structure des répertoires (structure plus légère qu'avec \textbf{pip} installé : quelques ko au lieu de plusieurs Mo).
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --without pip
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/ --without pip
 \end{lstlisting}
 
 \subsection*{Inclure le \texttt{site-packages} du système}
-Pour cela on ajoutant l'option \texttt{--system-site-packages} lors de la création de l'environnement virtuel. Et tout paquet externe supplémentaire, sera ensuite placé dans le répertoire \texttt{site-packages} de l'environnement virtuel. Il faut toutefois garder à l'esprit que nous n'aurons qu'un accès en lecture au répertoire \texttt{site-packages} du système.
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --system-site-packages
+Pour cela on ajoute l'option \texttt{--system-site-packages} lors de la création de l'environnement virtuel. Et tout paquet externe supplémentaire sera ensuite placé dans le répertoire \texttt{site-packages} de l'environnement virtuel. Il faut toutefois garder à l'esprit que nous n'aurons qu'un accès en lecture au répertoire \texttt{site-packages} du système.
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/ --system-site-packages
 \end{lstlisting}
 
 Dans le fichier \texttt{pyenv.cgf} nous trouvons alors la ligne suivante:
-\begin{verbatim}
-    include-system-site-packages = true
-\end{verbatim}
+\begin{lstlisting}[style=file]
+include-system-site-packages = true
+\end{lstlisting}
 
 \subsection*{Mettre à jour votre Python pour qu'il corresponde à celui du système}
 En construisant son environnement virtuel en utilisant des copies plutôt que des liens symboliques et que l'on souhaite ensuite mettre à jour la version de base de Python sur le système, nous pourrions rencontrer un problème de décalage de version avec les modules de la bibliothèque standard.
 
 Le module \textbf{venv} offre une solution à ce problème. L'argument optionnel \texttt{--upgrade} permet de conserver le répertoire \texttt{site-packages} intact tout en mettant à jour les fichiers binaires avec les nouvelles versions du système :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv venv/ --upgrade
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv venv/ --upgrade
 \end{lstlisting}
 
 \section{Gestion des environnements virtuels}
@@ -359,66 +358,65 @@ Puisqu'un environnement virtuel Python n'est qu'une structure de répertoires, n
 \end{itemize}
 
 Avec la première solution, nous créons un nouvel environnement virtuel dans le répertoire racine du projet :
-\begin{verbatim}
+\begin{lstlisting}[style=tree]
 project_name/
-│
-|── venv/
-│
-|── src/
-\end{verbatim}
+|\textbar|
+|\textbar|-- venv/
+|\textbar|
+|\textbar|-- src/
+\end{lstlisting}
 
 Le répertoire de l'environnement virtuel cohabite alors avec tout le code du projet. L'avantage de cette structure est que l'on sait d'emblée quel environnement virtuel appartient à quel projet et l'activation se réalise à l'aide d'un chemin relatif court.
 
 Avec la seconde solution tous les environnements virtuels sont placés dans un seul répertoire :
-\begin{verbatim}
+\begin{lstlisting}[style=tree]
 name/
-│
-|── Desktop/
-│
-|── Documents/
-│   │
-│   |── projects/
-│       │
-│       |── django-project/
-│       │
-│       |── flask-project/
-│       │
-│       |── pandas-project/
-│
-|── venvs
-│   │
-│   |── django-venv/
-│   │
-│   |── flask-venv/
-│   │
-│   |── pandas-venv/
-│
-|── Autres_répertoires/
-\end{verbatim}
+|\textbar|
+|\textbar|-- Desktop/
+|\textbar|
+|\textbar|-- Documents/
+|\textbar|   |\textbar|
+|\textbar|   |\textbar|-- projects/
+|\textbar|       |\textbar|
+|\textbar|       |\textbar|-- django-project/
+|\textbar|       |\textbar|
+|\textbar|       |\textbar|-- flask-project/
+|\textbar|       |\textbar|
+|\textbar|       |\textbar|-- pandas-project/
+|\textbar|
+|\textbar|-- venvs
+|\textbar|   |\textbar|
+|\textbar|   |\textbar|-- django-venv/
+|\textbar|   |\textbar|
+|\textbar|   |\textbar|-- flask-venv/
+|\textbar|   |\textbar|
+|\textbar|   |\textbar|-- pandas-venv/
+|\textbar|
+|\textbar|-- Autres_répertoires/
+\end{lstlisting}
 
 Si tous les environnements virtuels  sont centralisés dans un même répertoire, il est nécessaire d'user d'un chemin absolu pour les activer.
 
-A noter que la plupart des IDE offrent cette possibilité de choix\footnote{Pour \textbf{Visual Studio Code} : \url{https://code.visualstudio.com/docs/python/environments}. Pour \textbf{PyCharm} : \url{https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html}}.
+A noter que la plupart des IDE offrent cette possibilité\footnote{Pour \textbf{Visual Studio Code} : \url{https://code.visualstudio.com/docs/python/environments}. Pour \textbf{PyCharm} : \url{https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html}}.
 
 \subsection*{Des objets jetables}
-Les environnements virtuels sont des structures de répertoires jetables. Il ne faut donc pas y ajouter manuellement du code ou des informations supplémentaires.Tout ce qui s'y trouve doit être géré par le gestionnaire de paquets.
+Les environnements virtuels sont des structures de répertoires jetables. Il ne faut donc pas y ajouter manuellement du code ou des informations supplémentaires. Tout ce qui s'y trouve doit être géré par le gestionnaire de paquets.
 
 Un environnement virtuel ne doit pas non plus être livré au contrôle de version. Les environnements virtuels ne sont pas des installations Python entièrement autonomes, il ne s'agit donc pas d'une application portable. De même, les environnements virtuels en production sont déconseillés\footnote{\url{https://realpython.com/python-virtual-environments-a-primer/\#avoid-virtual-environments-in-production}}.
 
 \subsection*{Épingler les dépendances}
 Pour reproduire un environnement virtuel  il nous faut décrire son contenu via un fichier spécifique : \texttt{requirements.txt}.
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip freeze > requirements.txt
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip freeze > requirements.txt
 \end{lstlisting}
 
 Ce fichier contient une liste des dépendances externes installées dans l'environnement virtuel. C'est à l'aide de ce fichier que nous saurons le récréer.
-\begin{lstlisting}[style=terminal]
-(.venv) |\textcolor{terminalprompt}{user@machine: \$}| deactivate
-|\textcolor{terminalprompt}{user@machine: \$}| rm -Rf .venv
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv .new-venv/
-|\textcolor{terminalprompt}{user@machine: \$}| source .new-venv/bin/activate
-(.new-venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -r requiremen
-    ts.txt
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| deactivate
+|\userprompt| rm -Rf .venv
+|\userprompt| python3 -m venv .new-venv/
+|\userprompt| source .new-venv/bin/activate
+(.new-venv)|\userprompt| python3 -m pip install -r requirements.txt
 \end{lstlisting}
 
 En soumettant le fichier \texttt{requirements.txt} au contrôle de version, nous livrons le code du projet ainsi que la recette qui permettra de recréer le même environnement virtuel.
