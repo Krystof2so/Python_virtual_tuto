@@ -10,6 +10,7 @@
 
 % Packages additionnels :
 \usepackage{array}    % Pour des options supplémentaires de formatage de tableau
+\usepackage{calligra} % Pour utiliser la police cursive Calligra
 \usepackage{color}  % pour utiliser des couleurs
 \usepackage{fancyhdr}  % Personnalisation en-tête et pied de page
 \usepackage{graphicx}
@@ -20,6 +21,7 @@
 \usepackage{newunicodechar} % Pour définir des caractères Unicode
 \usepackage{pgfornament} % Pour utiliser les ornements
 \usepackage{tabularx} % Pour les tableaux ajustables
+\usepackage{textcomp}   % Pour utiliser \textquotesingle par exemple
 \usepackage{times} % Pour utiliser la police Times New Roman
 \usepackage{titlesec} % Pour personnaliser les titres de chapitre
 \usepackage{verbatim}  % pour les citations de code
@@ -34,6 +36,14 @@
 % ------------------------------------
 % --- CARACTERISTIQUES DU DOCUMENT ---
 % ------------------------------------
+% Configuration de hyperref pour supprimer les bordures des liens :
+\hypersetup{
+    colorlinks=true, % Active les liens colorés
+    linkcolor=nord0, % Couleur des liens internes
+    urlcolor=nord10, % Couleur des URLs
+    pdfborder={0 0 0}, % Supprime les bordures autour des liens
+}
+
 % Définir l'espace entre les paragraphes :
 \setlength{\parskip}{1em} % Ajoute un espace de 1em entre les paragraphes
 
@@ -44,17 +54,43 @@
 \DeclareUnicodeCharacter{2514}{\textbackslash} % └
 
 
-% ------------------------------
-% --- DEFINITION DE COULEURS ---
-% ------------------------------
+% -------------------------------
+% --- DEFINITION DES COULEURS ---
+% -------------------------------
+% Définir les couleurs du thème Nord (cf. https://www.nordtheme.com/) :
+% Polar night :
+\definecolor{nord0}{HTML}{2e3440}
+\definecolor{nord1}{HTML}{3b4252}
+\definecolor{nord2}{HTML}{434c5e}
+\definecolor{nord3}{HTML}{4c566a}
+% Snow storm :
+\definecolor{nord4}{HTML}{d8dee9}
+\definecolor{nord5}{HTML}{e5e9f0}
+\definecolor{nord6}{HTML}{eceff4}
+% Frost :
+\definecolor{nord7}{HTML}{8fbcbb}
+\definecolor{nord8}{HTML}{88c0d0}
+\definecolor{nord9}{HTML}{81a1c1}
+\definecolor{nord10}{HTML}{5e81ac}
+% Aurora :
+\definecolor{nord11}{HTML}{bf616a} % Rouge
+\definecolor{nord12}{HTML}{d08770} % Orange
+\definecolor{nord13}{HTML}{ebcb8b} % Jaune
+\definecolor{nord14}{HTML}{a3be8c} % Vert
+\definecolor{nord15}{HTML}{b48ead} % Mauve
+
 % Pour le code Python (script) :
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 \definecolor{codegreen}{rgb}{0,0.6,0}
 
-% Pour le terminal :
-\definecolor{terminalbackground}{HTML}{6F6F6F} % Fond gris
-\definecolor{terminaltext}{HTML}{8FBCBB} % Texte vert
-\definecolor{terminalprompt}{HTML}{FF8700} % Prompt orange
+% Pour le terminal (thème Nord) :
+\definecolor{terminalbackground}{HTML}{2e3440} % Polar Night
+\definecolor{terminaltext}{HTML}{81a1c1} % Bleu
+\definecolor{terminalcomment}{HTML}{d8dee9} % Blanc
+\definecolor{terminalprompt}{HTML}{a3be8c} % Vert
+\definecolor{promptuser}{HTML}{b48ead} % Mauve
+\definecolor{promptadm}{HTML}{d08770} % Orange
+\definecolor{linereturn}{HTML}{bf616a} % Rouge
 
 % Définir les couleurs bleu et jaune du logo Python :
 \definecolor{pythonblue}{RGB}{54,117,171}
@@ -62,29 +98,34 @@
 
 
 % -------------------------------------------
-% --- ENVIRONNEMENTS (LSTLISTING) DE CODE ---
+% --- ENVIRONNEMENTS DE CODE (LSTLISTING) ---
 % -------------------------------------------
-% Environnement pour du code Python :
+% Paramètres globaux pour lstlisting :
 \lstset{
-    language=Python,
+    % Marges :
     aboveskip=5mm,  % Marge avant l'insertion du code
     belowskip=5mm,  % Marge après l'insertion du code
-    backgroundcolor=\color{backcolour},
-    keywordstyle=\color{red}, % Couleur mots clés
-    commentstyle=\color{olive}, % Coleur commentaires  
-    stringstyle=\color{codegreen},  % Style des strings
-    basicstyle=\small, % Taille police
-    basicstyle=\ttfamily, % Style police
+    xleftmargin=4mm, % Marge à gauche du bloc de code
+    xrightmargin=4mm, % Marge à droite du bloc de code
+    framextopmargin=2mm, % Marge en haut à l'intérieur du cadre
+    framexbottommargin=2mm, % Marge en bas à l'intérieur du cadre
+    framexleftmargin=3mm, % Marge à gauche à l'intérieur du cadre
+    framexrightmargin=2mm, % Marge à droite à l'intérieur du cadre
+    % Couleurs :
+    backgroundcolor=\color{nord1},
+    basicstyle=\ttfamily\color{nord9}, 
+    commentstyle=\color{nord6}, 
+    stringstyle=\color{nord9}, 
+    % Options :
     numbers=left, % Numéros de ligne à gauche
-    numberstyle=\scriptsize, % Taille numéros de ligne 
+    numberstyle=\scriptsize\color{nord3}, % Taille et couleur des numéros de ligne
     numbersep=10pt, % Espace entre numéro de ligne et code
-    showspaces=false,  % Voir les espaces             
+    showspaces=false,  % Voir les espaces
     showstringspaces=false,  % Voir les espaces des strings
-    showtabs=false,  % Voir les tabulations               
+    showtabs=false,  % Voir les tabulations
     tabsize=4,  % Tabulations
-    frame=tb,  % Cadre en haut et en bas
-    rulecolor=\color{gray},  % Couleur du cadre 
     captionpos=b,  % Position de la légende du code
+    escapeinside={||},
     literate= % Pour une gestion de l'utf8
         {â}{{\^a}}1 {à}{{\`a}}1 {ç}{{\c c}}1 {é}{{\'e}}1
         {è}{{\`e}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1
@@ -92,20 +133,94 @@
         {Ò}{{\`O}}1
 }
 
+% Environnement pour le langage bash :
+\lstdefinestyle{bash}{
+    language=bash,
+    keywordstyle=\color{nord8},
+    numbers=none, % Pas de numéros de ligne
+    breaklines=true, % Retour à la ligne automatique
+    postbreak=\mbox{\textcolor{nord11}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
+    keywords={
+        cd, curl, deactivate, echo, ls, 
+        mkdir, pip, python3, rm, sh, 
+        source, tree, uv, venv
+    },
+}
+
+% Environnement pour contenu de fichier :
+\lstdefinestyle{file}{
+    backgroundcolor=\color{nord5},
+    basicstyle=\ttfamily\color{nord0},
+    breaklines=true,
+    postbreak=\mbox{textcolor{nord15}{$\hookrightarrow$}\space},
+}
+
+% Environnement pour le langage python :
+\lstdefinestyle{python}{
+    language=python,
+    backgroundcolor=\color{nord5},
+    basicstyle=\bfseries\ttfamily\color{nord3},
+    keywordstyle=\bfseries\color{nord11},
+    commentstyle=\normalfont\color{nord12},
+    stringstyle=\bfseries\color{nord14},
+    numberstyle=\scriptsize\color{nord0},
+    breaklines=true, % Retour à la ligne automatique
+    postbreak=\mbox{\textcolor{nord12}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
+    morekeywords={
+        calendar, datetime, QApplication, QGridLayout,
+        QHBoxLayout, QLabel, QPushButton, QSize, 
+        Qt, QVBoxLayout, QWidget 
+    }
+}
+
+% Environnement pour imiter un interpréteur Python
+\lstdefinestyle{repl}{
+    language=Python,
+    backgroundcolor=\color{nord0},
+    basicstyle=\ttfamily\color{nord9},
+    keywordstyle=\color{nord11},
+    commentstyle=\color{nord6},
+    stringstyle=\color{nord14},
+    numbers=none,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{nord12}{$\hookrightarrow$}\space},
+    xleftmargin=10pt, % Ajoute une marge à gauche pour aligner le code
+    morekeywords={sysconfig}
+}
+
+% Environnement pour un visualisateur :
+\lstdefinestyle{visual}{
+    backgroundcolor=\color{nord3},
+    basicstyle=\ttfamily\color{nord8},
+    commentstyle=\color{nord8},
+    stringstyle=\color{nord8},
+    numberstyle=\scriptsize\color{nord0},
+    breaklines=true, % Retour à la ligne automatique
+    postbreak=\mbox{\textcolor{nord12}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
+}
+
+% Environnement pour les arborescences :
+\lstdefinestyle{tree}{
+    backgroundcolor=\color{nord4},
+    basicstyle=\ttfamily\color{nord0},
+    numbers=none,
+    breaklines=none, % pas de retour à la ligne automatique
+}
+
 % Environnement pour imiter un terminal :
 \lstdefinestyle{terminal}{
     backgroundcolor=\color{terminalbackground}, % Fond gris foncé
     basicstyle=\ttfamily\color{terminaltext}, % Police à chasse fixe et texte vert
-    keywordstyle=\color{terminalprompt}, % Mots-clés en orange
-    commentstyle=\color{white}, % Commentaires en blanc
+    keywordstyle=\color{terminaltext}, % Mots-clés en orange
+    commentstyle=\color{terminalcomment}, % Commentaires en blanc
     numbers=none, % Pas de numéros de ligne
     frame=none, % Pas de cadre
     showstringspaces=false,
     showtabs=false,
     tabsize=4,
     breaklines=true, % Retour à la ligne automatique
-    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
-    escapeinside={|}{|} % Utiliser pour échapper à LaTeX
+    postbreak=\mbox{\textcolor{linereturn}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
+    escapeinside={||}
 }
 
 
@@ -128,7 +243,7 @@
             roundcorner=5pt, % Coins arrondis
             shadow=false, % Pas d'ombre
             shadowsize=0pt, % Taille de l'ombre
-            backgroundcolor=gray!10, % Fond gris clair
+            backgroundcolor=nord5, % Fond gris clair
             frametitleaboveskip=0pt, % Pas d'espace au-dessus du titre
             frametitlebelowskip=0pt, % Pas d'espace en dessous du titre
             frametitlebackgroundcolor=white, % Fond du titre blanc
@@ -137,11 +252,23 @@
             frametitlealignment=\raggedright % Alignement du titre à gauche
         ]
         \textit{``#1''} \\
-        \textmd{--- #2}
+            \textmd{--- \textcolor{nord15}{\textbf{#2}}}
         \end{mdframed}
     \end{minipage}
 }
 
+
+% -------------------------------
+% --- DEFINITION DE COMMANDES ---
+% -------------------------------
+\newcommand{\userprompt}{\textcolor{nord14}{user@machine:}\textcolor{nord15}{\$}}
+\newcommand{\pythonprompt}{\textcolor{nord12}{\textgreater{}\textgreater{}\textgreater{}}}
+
+% Définir les noms des mois pour la date :
+\newcommand{\getMonthName}[1]{%
+  \ifcase#1\or Janvier\or Février\or Mars\or Avril\or Mai\or Juin\or
+  Juillet\or Août\or Septembre\or Octobre\or Novembre\or Décembre\fi
+}
 
 % ----------------------
 % --- TITRE DU LIVRE ---
@@ -154,32 +281,39 @@
 % -------------------------
 \begin{document}
 
+% Supprimer la numérotation des pages
+\pagenumbering{gobble}
+
 % Page de garde :
 \begin{titlepage}
     \begin{center}
         \vspace*{1cm}
 
         \begin{mdframed}[
-            backgroundcolor=gray!35,
+            backgroundcolor=gray!30,
             linewidth=1.5pt,
             roundcorner=6pt,
         ]
             \centering
             \vspace*{1cm}
 
-            \textbf{\Huge \fontfamily{ptm}\selectfont Environnements de programmation Python, et les outils dédiés}
+            \textbf{\fontsize{32pt}{38pt} \fontfamily{calligra}\selectfont Environnements de \\ programmation Python,\\ \medskip et les outils dédiés}
 
             \vspace*{2cm}
 
-            \includegraphics[width=0.6\textwidth]{IMG/python-logo.png} % Remplacez par le chemin de votre image
+            \includegraphics[width=0.75\textwidth]{IMG/python-logo.png} % Remplacez par le chemin de votre image
 
-            \vspace*{8cm}
+            \vspace*{2cm}
 
-            \Large Krystof26
+            \fontsize{24pt}{30pt} \fontfamily{calligra}\selectfont Krystof26
 
             \vspace*{0.5cm}
+            
+            \begin{center}
+                \pgfornament[width=0.3\textwidth]{88} % 88 est le numéro de l'ornement
+            \end{center}
 
-            \Large \today
+            \Large \ttfamily{\getMonthName{\the\month} \the\year}
 
             \vspace*{1cm}
         \end{mdframed}
@@ -187,11 +321,17 @@
     \end{center}
 \end{titlepage}
 
+\frontmatter
+\pagenumbering{Roman} % Chiffres romains en majuscules
+
 % Préface :
 \include{chapters/preface.tex}
 
 % Table des matières :
 \tableofcontents
+
+\mainmatter
+\pagenumbering{arabic} % Chiffres arabes
 
 % Inclusion des chapitres :
 \include{chapters/chapter_env_virtuals.tex}
@@ -200,5 +340,11 @@
 \include{chapters/chapter_pyenv.tex}
 \include{chapters/chapter_poetry.tex}
 \include{chapters/chapter_uv.tex}
+
+% Annexes :
+\backmatter
+\addcontentsline{toc}{part}{Annexes}
+\part*{\textcolor{nord11}{Annexes}}
+\include{annexes/code_calendar.tex}
 
 \end{document}
