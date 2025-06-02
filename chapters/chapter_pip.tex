@@ -3,7 +3,7 @@
 \insertcitation{La première règle de l'écologie, c'est que les éléments sont tous liés les uns aux autres.}{Barry Commoner}
 \bigskip
 
-Dans le vaste écosystème de Python, \textbf{pip}\footnote{Documentation officielle : \url{https://pip.pypa.io/en/stable/}} se révèle comme étant un outil indispensable. En tant que gestionnaire de paquets par défaut, pip permet d'installer, de mettre à jour et de supprimer des bibliothèques Python de manière simple et efficace. Que l'on travaille sur un petit projet personnel ou sur une application complexe, \textbf{pip} offre la flexibilité et la puissance nécessaires pour gérer les dépendances des projets avec précision.
+Dans le vaste écosystème de Python, \textbf{pip}\footnote{Documentation officielle : \url{https://pip.pypa.io/en/stable/}} se révèle comme étant un outil indispensable. En tant que gestionnaire de paquets par défaut, \textbf{pip} permet d'installer, de mettre à jour et de supprimer des bibliothèques Python de manière simple et efficace. Que l'on travaille sur un petit projet personnel ou sur une application complexe, \textbf{pip} offre la flexibilité et la puissance nécessaires pour gérer les dépendances des projets avec précision.
 
 L'un des principaux avantages de \textbf{pip} est sa simplicité d'utilisation. Avec des commandes intuitives, nous pouvons installer des paquets en quelques secondes, explorer de nouvelles bibliothèques. De plus, \textbf{pip} est compatible avec une multitude de dépôts de paquets, offrant ainsi un accès à une vaste gamme de bibliothèques et d'outils développés par la communauté Python.
 
@@ -26,21 +26,20 @@ Le langage Python dispose d'une bibliothèque standard, mais également de paque
 Une fois l'environnement virtuel créé et activé, toutes les commandes \textbf{pip} alors exécutées le seront dans l'environnement virtuel.
 
 Pour installer des paquets, \textbf{pip} fournit la commande \texttt{install} : 
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install nom_paquet
+\begin{lstlisting}[style=bash]
+(.venv)|\userprompt| python3 -m pip install nom_paquet
 \end{lstlisting}
 
 La commande \textbf{pip} recherche le paquet dans \textbf{PyPI}, résout ses dépendances (dépendances répertoriées dans les métadonnées du paquet) et installe tout ce qui est nécessaire dans l'environnement virtuel actuel. C'est toujours la dernière version du paquetage qui est installée. 
 
 Il est également possible d'installer plusieurs paquets en une seule commande :
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install nom_paquet1 nom_p
-    aquet2
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install nom_paquet1 nom_paquet2
 \end{lstlisting}
 
 La commande \texttt{list} permet d'afficher les paquets installés dans l'environnement, ainsi que leurs numéros de version. Exemple :
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip list
+\begin{lstlisting}[style=bash]
+(.venv)|\userprompt| python3 -m pip list
 Package           Version
 ----------------- --------
 jedi              0.19.2
@@ -55,9 +54,9 @@ urwid_readline    0.15.1
 wcwidth           0.2.13
 \end{lstlisting}
 
-Consulter les informations (métadonnées d'un paquet) à l'aide de la commande \textit{show}:
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip show jedi
+Consulter les informations (métadonnées d'un paquet) à l'aide de la commande \texttt{show}:
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip show jedi
 Name: jedi
 Version: 0.19.2
 Summary: An autocompletion tool for Python that can be used for text editors.
@@ -74,20 +73,20 @@ Required-by: pudb
 Par défaut, \textbf{pip} utilise \textbf{PyPI} pour rechercher des paquets, mais il est également possible de définir un index personnalisé (disponible par exemple sur un serveur privé). Un \textit{package index} personnalisé doit être conforme avec la norme définie dans la \texttt{PEP 503}\footnote{API de dépôt simple : \url{https://peps.python.org/pep-0503/}} pour fonctionner avec \textbf{pip}. Tout index personnalisé qui suit la même API peut être ciblé avec l’option \texttt{--index-url} ou \texttt{-i}.
 
 Par exemple, pour installer l’outil \textbf{rptree} à partir de l’index des paquets \texttt{TestPyPI}\footnote{\url{https://test.pypi.org/}} :
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -i https://test.pypi.org/simple/ rptree
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install -i https://test.pypi.org/simple/ rptree
 Looking in indexes: https://test.pypi.org/simple/
 Collecting rptree
-  Using cached https://test-files.pythonhosted.org/packages/0d/bd/83a44ae145bd05b4b667aca5be7b5a7cf61d0d26577c0c93f2a2d0d c2c59/rptree-0.1.0-py3-none-any.whl.metadata (1.5 kB)
-Using cached https://test-files.pythonhosted.org/packages/0d/bd/83a44ae145bd05b4b667aca5be7b5a7cf61d0d26577c0c93f2a2d0dc2 c59/rptree-0.1.0-py3-none-any.whl (4.4 kB)
+  Using cached https://test-files.pythonhosted.org/packages/0d/bd/83a44ae145bd05b4b667aca5be7b5a7cf61d0d26577c0c93f2a2 d0d c2c59/rptree-0.1.0-py3-none-any.whl.metadata (1.5 kB)
+Using cached https://test-files.pythonhosted.org/packages/0d/bd/83a44ae145bd05b4b667aca5be7b5a7cf61d0d26577c0c93f2a2 d0dc2 c59/rptree-0.1.0-py3-none-any.whl (4.4 kB)
 Installing collected packages: rptree
 Successfully installed rptree-0.1.0
 \end{lstlisting}
 
 \subsection*{Installation de paquets depuis des dépôts \textit{Git}}
 \textbf{pip} fournit également l’option d’installer des paquets à partir d’un dépôt \textbf{Git}. 
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install git+https://github.com/realpython/rptree
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install git+https://github.com/realpython/rptree
 Collecting git+https://github.com/realpython/rptree
   Cloning https://github.com/realpython/rptree to /tmp/pip-req-build-ugz_ee9b
   Running command git clone --filter=blob:none --quiet https://github.com/realpython/rptree /tmp/pip-req-build-ugz_ee9b
@@ -104,40 +103,39 @@ Installing collected packages: rptree
 Successfully installed rptree-0.1.1
 \end{lstlisting}
 
-Le schéma \texttt{git+https} pointe vers le dépôt \texttt{Git} qui contient un paquet installable.
+Le schéma \texttt{git+https} pointe vers le dépôt \textbf{Git} qui contient un paquet installable.
 
 Pour faire appel à d'autres dépôts \textbf{VCS} voir la page de documentation dédiée\footnote{\url{https://pip.pypa.io/en/stable/topics/vcs-support/}}.
 
 \section{Le fichier d'exigence}
-Les dépendances externes sont aussi appelées exigences. Souvent, les projets Python épinglent leurs exigences dans un fichier appelé \texttt{requirements.txt} ou similaire. Le format de fichier \textit{requirements} permet de spécifier précisément quels paquets et versions doivent être installés.
+Les dépendances externes sont aussi appelées exigences. Souvent, les projets Python épinglent leurs exigences dans un fichier appelé \texttt{requirements.txt} ou similaire. Le format de fichier \textbf{requirements} permet de spécifier précisément quels paquets et versions doivent être installés.
 
 \textbf{pip} dispose d'une commande de gel (\texttt{freeze}) qui affiche les paquets installés au format requis, et qui permet également de rediriger la sortie vers un fichier afin de générer un fichier d’exigences :
-\begin{lstlisting}[style=terminal]
-(.venv)|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip freeze > requirements.txt
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip freeze > requirements.txt
 \end{lstlisting}
 
 Exemple de fichier \texttt{requirements.txt} que l'on peut obtenir après avoir installé les paquets \textbf{pyside6} et \textbf{requests}:
-\begin{verbatim}
-    certifi==2025.4.26
-    charset-normalizer==3.4.2
-    idna==3.10
-    PySide6==6.9.0
-    PySide6_Addons==6.9.0
-    PySide6_Essentials==6.9.0
-    requests==2.32.3
-    shiboken6==6.9.0
-    urllib3==2.4.0
-\end{verbatim}
+\begin{lstlisting}[style=file]
+certifi==2025.4.26
+charset-normalizer==3.4.2
+idna==3.10
+PySide6==6.9.0
+PySide6_Addons==6.9.0
+PySide6_Essentials==6.9.0
+requests==2.32.3
+shiboken6==6.9.0
+urllib3==2.4.0
+\end{lstlisting}
 
 Ce fichier peut éventuellement porter un autre nom, cependant une convention largement adoptée consiste à lui donner le nom \texttt{requirements.txt}.
 
 Nous pouvons demander à \textbf{pip} d’installer les paquets listés dans \texttt{requirements.txt} dans un nouvel environnement:
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m venv .venv/
-|\textcolor{terminalprompt}{user@machine: \$}| source .venv/bin/activate
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -r requirements
-    .txt
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip list
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m venv .venv/
+|\userprompt| source .venv/bin/activate
+(.venv)|\userprompt| python3 -m pip install -r requirements.txt
+(.venv)|\userprompt| python3 -m pip list
 Collecting certifi==2025.4.26 (from -r requirements.txt (line 1))
   Using cached certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
 Collecting charset-normalizer==3.4.2 (from -r requirements.txt (line 2))
@@ -175,57 +173,55 @@ Nous pouvons désormais soumettre \texttt{requirements.txt} dans un système de 
 Chaque ligne du fichier d'exigence indique quelque chose à installer, ou des arguments pour \texttt{pip install}.
 
 Il est possible de spécifier des exigences sous forme de noms simples :
-\begin{verbatim}
-    certifi
-    charset-normalizer
-\end{verbatim}
+\begin{lstlisting}[style=file]
+certifi
+charset-normalizer
+\end{lstlisting}
 
 Il est toutefois possible de spécifier les versions de dépendances à l’aide d’opérateurs de comparaison qui donnent une certaine flexibilité pour assurer la mise à jour des paquets tout en définissant la version de base d’un paquet.
 
 Pour cela, éditer \texttt{requirements.txt} afin de transformer les opérateurs d’égalité (\textit{==}) en plus grand ou égal  (\textit{>=}) :
-\begin{verbatim}
-    certifi==2025.4.26
-    charset-normalizer==3.4.2
-    idna==3.10
-    PySide6>=6.9.0
-    PySide6_Addons>=6.9.0
-    # ...etc...
-\end{verbatim}
+\begin{lstlisting}[style=file]
+certifi==2025.4.26
+charset-normalizer==3.4.2
+idna==3.10
+PySide6>=6.9.0
+PySide6_Addons>=6.9.0
+# ...etc...
+\end{lstlisting}
 
 A noter le symbole \texttt{\#} qui permet d'insérer des commentaires.
 
 Ensuite, nous pouvons mettre à niveau les packages en exécutant la commande \texttt{install} avec le commutateur \texttt{--upgrade} ou le raccourci \texttt{-U} :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -U -r requiremen
-    ts.txt
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install -U -r requirements.txt
 \end{lstlisting}
 
 Si une nouvelle version est disponible pour un paquet répertorié, le paquet sera mis à niveau.
 
 Nous pouvons également modifier le fichier des exigences pour empêcher l’installation d'une version donnée ou ultérieure :
-\begin{verbatim}
-    PySide6>=6.9.0, <6.9.5
-    PySide6_Addons>=6.9.0, <6.9.5
-\end{verbatim}
+\begin{lstlisting}[style=file]
+PySide6>=6.9.0, <6.9.5
+PySide6_Addons>=6.9.0, <6.9.5
+\end{lstlisting}
 
 Page de la documentation officielle permettant de visualiser divers exemples de formats de fichier d'exigence : \url{https://pip.pypa.io/en/stable/cli/pip_install/#pip-install-examples}.
 
 \subsection*{Séparation des dépendances de production et de développement}
-Pour cela on va créer un second fichier d'exigences, \texttt{requirementsi\_dev.txt}, pour lister les outils supplémentaires (par exemple \textbf{pytest} permettant de mettre en place un environnement de développement :
-\begin{verbatim}
+Pour cela on va créer un second fichier d'exigences, \texttt{requirements\_dev.txt}, pour lister les outils supplémentaires (par exemple \textbf{pytest} permettant de mettre en place un environnement de développement) :
+\begin{lstlisting}[style=file]
 pytest>=x.y.z
-\end{verbatim}
+\end{lstlisting}
 
-Avoir deux fichiers de configuration exigera d'utiliser \textbf{pip} pour installer les deux: \texttt{requirements.txt} et \texttt{requirements\_dev.txt}. Cependant, \textbf{pip} permet de spécifier des paramètres supplémentaires dans un fichier d'exigences, ainsi, il est possible de modifier \texttt{requirements\_dev.txt} pour installer également les exigences à partir du fichier production \texttt{requirements.txt} :
-\begin{verbatim}
+Avoir deux fichiers de configuration exigera d'utiliser \textbf{pip} pour installer les deux: \texttt{requi\\rements.txt} et \texttt{requirements\_dev.txt}. Cependant, \textbf{pip} permet de spécifier des paramètres supplémentaires dans un fichier d'exigences, ainsi, il est possible de modifier \texttt{requir\\ements\_dev.txt} pour installer également les exigences à partir du fichier production \texttt{requi\\rements.txt} :
+\begin{lstlisting}[style=file]
 -r requirements.txt
 pytest>=x.y.z
-\end{verbatim}
+\end{lstlisting}
 
 Maintenant, dans l'environnement de développement, il suffit d’exécuter cette seule commande pour installer toutes les exigences :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip install -r requirements
-    _dev.txt
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install -r requirements_dev.txt
 \end{lstlisting}
 
 Dans un environnement de production, il suffit uniquement d’installer les exigences de production, soit d'utiliser le fichier \texttt{requirements.txt}.
@@ -235,25 +231,23 @@ Une fois le projet prêt pour la publication, il nous suffira de créer le fichi
 
 \section{Désinstaller des paquets}
 Lorsque que l'on installe un paquet il arrive que des dépendances (d'autres paquets) soient installées. Plus on installe de paquets, plus il y a de chances que plusieurs paquets aient des dépendances communes. C’est là que la commande \texttt{show} s’avère utile. Ainsi, avant de désinstaller un paquet, on s'assure d’exécuter la commande \texttt{show} pour ce paquet. Si le champ \texttt{Required-by} est vide, cela signifie qu'il n'y a aucune interdépendance avec un autre paquet. Par contre il faut également lancer la commande \texttt{show} sur les autres dépendances pour procéder à la même vérification. Une fois vérifié l’ordre des dépendances des paquets que nous souhaitons désinstaller, nous pouvez les supprimer en utilisant la commande \texttt{uninstall} :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip uninstall paquet
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip uninstall paquet
 \end{lstlisting}
 
 La commande de désinstallation montre les fichiers qui seront supprimés et demande confirmation. Il est possible de passer outre cette demande de confirmation :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip uninstall paquet -y
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip uninstall paquet -y
 \end{lstlisting}
 
 Supprimer plusieurs paquets en même temps en passant toujours outre la demande de confirmation :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip uninstall -y paquet1 paq
-    uet2 paquet3
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip uninstall -y paquet1 paquet2 paquet3
 \end{lstlisting}
 
 Il est également possible de désinstaller tous les packages répertoriés dans le fichier des exigences en fournissant l’option \texttt{-r requirements.txt} :
-\begin{lstlisting}[style=terminal]
-|(.venv)\textcolor{terminalprompt}{user@machine: \$}| python3 -m pip uninstall -r requirements.
-    txt -y 
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip uninstall -r requirements.txt -y 
 \end{lstlisting}
 
 Remarque : en travaillant dans un environnement virtuel, il peut être moins compliqué de supprimer l'environnement virtuel et d’en créer un nouveau. Ensuite, nous installerons les paquets dont nous avons besoin au lieu d’essayer de désinstaller les paquets dont nous n’avons pas besoin.
