@@ -16,15 +16,15 @@ Avant d'installer \textbf{pyenv} lui-même, nous aurons besoin de quelques dépe
 
 \subsection*{Les dépendances de construction}
 Les dépendances de construction varient selon la plate-forme. Sur \textbf{Debian GNU/Linux} il nous faudra installer les dépendances suivantes :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \#}| apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl
+\begin{lstlisting}[style=bash]
+|\userprompt| sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl
 \end{lstlisting}
 
 \subsection*{Utiliser le programme d'installation de \textit{pyenv}}
 Après avoir installé les dépendances, nous sommes prêts à installer \textbf{pyenv} lui-même. Il est recommandé d'utiliser le projet \textbf{pyenv-installer}\footnote{\url{https://github.com/pyenv/pyenv-installer}}.
-\begin{verbatim}
-    $ curl https://pyenv.run | bash
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| curl https://pyenv.run |\textbar| bash
+\end{lstlisting}
 
 Ceci installera \textbf{pyenv} ainsi que quelques \textit{plugins} utiles :
 \begin{description}
@@ -34,68 +34,68 @@ Ceci installera \textbf{pyenv} ainsi que quelques \textit{plugins} utiles :
     \item[pyenv-doctor] : \textit{Plugin} pour vérifier que \textbf{pyenv} et les dépendances sont installés
     \item[pyenv-which-ext] : \textit{Plugin} pour rechercher automatiquement les commandes système
 \end{description}
+\bigskip
 
 Pour utiliser \textbf{pyenv} avec \textbf{zsh} :
-\begin{verbatim}
-    $ echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
-    $ echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-        ' >> ~/.zshrc
-    $ echo 'eval "$(pyenv init - zsh)"' >> ~/.zshrc 
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+|\userprompt| echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+|\userprompt| echo 'eval "$(pyenv init - zsh)"' >> ~/.zshrc 
+\end{lstlisting}
 
 Puis relancer le \textit{shell} :
-\begin{verbatim}
-    $ exec "\$SHELL"
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| exec "\$SHELL"
+\end{lstlisting}
 
-Note de désinstallation  : saisir la commande \verb|\$ rm -Rf ~/.pyenv|, puis supprimer les lignes ajoutées au fichier \texttt{.zshrc}. Et enfin, relancer le \textit{shell}.
+Note de désinstallation  : saisir la commande \verb|rm -Rf ~/.pyenv|, puis supprimer les lignes ajoutées au fichier \texttt{.zshrc}. Et enfin, relancer le \textit{shell}.
 
 \section{Utiliser \textit{pyenv} pour installer \textit{Python}}
 Pour visualiser toutes les versions disponibles de \textbf{CPython} :
-\begin{verbatim}
-    $ pyenv install --list | grep " 3\.[678]"  # de python 3.6 à 3.8
-    $ pyenv install --list | grep " 3\.1[23]"  # de python 3.12 à 3.13
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install --list |\textbar| grep " 3\.[68]"  # de python 3.6 à 3.8
+|\userprompt| pyenv install --list |\textbar| grep " 3\.1[23]"  # de python 3.12 à 3.13
+\end{lstlisting}
 
 Sortie pour 3.12 à 3.13 :
-\begin{verbatim}
-    3.12.0
-    3.12-dev
-    3.12.1
-    3.12.2
-    3.12.3
-    3.12.4
-    3.12.5
-    3.12.6
-    3.12.7
-    3.12.8
-    3.12.9
-    3.12.10
-    3.13.0
-    3.13.0t
-    3.13-dev
-    3.13t-dev
-    3.13.1
-    3.13.1t
-    3.13.2
-    3.13.2t
-    3.13.3
-    3.13.3t
-\end{verbatim}
+\begin{lstlisting}[style=visual]
+3.12.0
+3.12-dev
+3.12.1
+3.12.2
+3.12.3
+3.12.4
+3.12.5
+3.12.6
+3.12.7
+3.12.8
+3.12.9
+3.12.10
+3.13.0
+3.13.0t
+3.13-dev
+3.13t-dev
+3.13.1
+3.13.1t
+3.13.2
+3.13.2t
+3.13.3
+3.13.3t
+\end{lstlisting}
 
 De même, pour voir toutes les versions de \textbf{Jython} :
-\begin{verbatim}
-    $ pyenv install --list | grep "jython"
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install --list |\textbar| grep "jython"
+\end{lstlisting}
 
 Pour visualiser tout ce qu'il est possible d'installer :
-\begin{verbatim}
-    $ pyenv install --list
-\end{verbatim}
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install --list
+\end{lstlisting}
 
 Installer une version de Python :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv install -v 3.14.0a7
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install -v 3.14.0a7
 [...]
 Installing collected packages: pip
   WARNING: The scripts pip3 and pip3.14 are installed in '/home/utilisateur/.pyenv/versions/3.14.0a7/bin' which is not on PATH.
@@ -109,42 +109,42 @@ Installed Python-3.14.0a7 to /home/utilisateur/.pyenv/versions/3.14.0a7
 \texttt{-v} propose le mode \texttt{verbose}. A noter que l'installation prendra environ 340 Mo d'espace disque.
 
 Désinstallation :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| rm -rf ~/.pyenv/versions/3.14.0a7
+\begin{lstlisting}[style=bash]
+|\userprompt| rm -rf ~/.pyenv/versions/3.14.0a7
 \end{lstlisting}
 
 ou bien :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv uninstall 3.14.0a7
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv uninstall 3.14.0a7
 \end{lstlisting}
 
 \subsection*{Emplacement de l'installation}
 \textbf{pyenv} fonctionne en construisant Python à partir des sources. Chaque version installée se trouve dans le répertoire racine de \textbf{pyenv}. Pour visualiser les versions installées :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| ls ~/.pyenv/versions/
+\begin{lstlisting}[style=bash]
+|\userprompt| ls ~/.pyenv/versions/
 3.12.10  3.14.0a7
 \end{lstlisting}
 
 \subsection*{Utilisation d'une de ces versions}
 Visualiser les versions dont on dispose :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv versions
 * system (set by /home/utilisateur/.pyenv/version)
   3.12.10
   3.14.0a7
 \end{lstlisting}
 
 L'astérisque (\texttt{*}) indique que la version système de Python est actuellement active. Ce paramètre est défini par un fichier situé dans le répertoire racine de \textbf{pyenv}. Cela signifie que, par défaut, c'est toujours le système Python qui est utilisé.
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python --version  # ou -V
+\begin{lstlisting}[style=bash]
+|\userprompt| python --version  # ou -V
 Python 3.13.3
-|\textcolor{terminalprompt}{user@machine: \$}| which python  # Confirmation avec 'which'
+|\userprompt| which python  # Confirmation avec 'which'
 /home/utilisateur/.pyenv/shims/python
 \end{lstlisting}
 
 C'est ainsi que \textbf{pyenv} fonctionne. \textbf{pyenv} s'insère dans le \textbf{PATH} et, du point de vue du système d'exploitation, c'est l'exécutable qui est appelé. Pour voir le chemin réel :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which python
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv which python
 pyenv: python: command not found
 
 The 'python' command exists in these Python versions:
@@ -153,35 +153,35 @@ The 'python' command exists in these Python versions:
 
 Note: See 'pyenv help global' for tips on allowing both
       python2 and python3 to be found.
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which python3
+|\userprompt| pyenv which python3
 /usr/bin/python3
 \end{lstlisting}
 
 Si on souhaite utiliser la version \textbf{3.14.0a7} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global 3.14.0a7
-|\textcolor{terminalprompt}{user@machine: \$}| python -V
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv global 3.14.0a7
+|\userprompt| python -V
 Python 3.14.0a7
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
+|\userprompt| pyenv versions
   system
   3.12.10
 * 3.14.0a7 (set by /home/utilisateur/.pyenv/version)
 \end{lstlisting}
 
 Un bon moyen de s'assurer que la cette version choisie de Python fonctionne correctement est d'exécuter la suite de tests intégrée (Cela prend beaucoup de temps):
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| python -m test
+\begin{lstlisting}[style=bash]
+|\userprompt| python -m test
 \end{lstlisting}
 
 Pour revenir à la version système :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global system
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv global system
 \end{lstlisting}
 
 \section{Les commandes de \textit{pyenv}}
 Pour une liste complète des commandes :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv commands
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv commands
 activate
 commands
 completions
@@ -220,8 +220,8 @@ which
 \end{lstlisting}
 
 Chaque commande dispose d'un drapeau \texttt{--help} qui donnera des informations plus détaillées.
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global --help
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv global --help
 Usage: pyenv global <version> <version2> <..>
 
 Sets the global Python version(s). You can override the global version at
@@ -260,48 +260,48 @@ Pour télécharger et installer Python.
 Affiche toutes les versions de Python actuellement installées (comme vu supra).
 
 Pour ne visualiser que la version active :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv version
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv version
 system (set by /home/utilisateur/.pyenv/version)
 \end{lstlisting}
 
 \subsection*{which}
 Cette commande permet de voir le chemin complet de l'exécutable que \textbf{pyenv} utilisera. Par exemple, si l'on souhaite voir où \textbf{pip} est installé :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which pip
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv which pip
 /home/utilisateur/.pyenv/versions/3.14.0a7/bin/pip
 \end{lstlisting}
 
 \subsection*{global}
 Définir la version globale de Python:
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global 3.12.10
-|\textcolor{terminalprompt}{user@machine: \$}| python3
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv global 3.12.10
+|\userprompt| python3
 Python 3.12.10 (main, May  7 2025, 16:29:42) [GCC 14.2.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> exit
 Use exit() or Ctrl-D (i.e. EOF) to exit
 >>> exit()
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global system
-|\textcolor{terminalprompt}{user@machine: \$}| python3
+|\userprompt| pyenv global system
+|\userprompt| python3
 Python 3.13.3 (main, Apr 10 2025, 21:38:51) [GCC 14.2.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> exit
-$
+|\userprompt|
 \end{lstlisting}
 
 \subsection*{local}
 La commande \texttt{local} est souvent utilisée pour définir une version de Python spécifique à une application. Nous pouvons l'utiliser pour définir la version \textbf{2.7.15} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv local 2.7.15
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv local 2.7.15
 \end{lstlisting}
 
 Cette commande crée un fichier \texttt{.python-version} dans le répertoire courant. Si \textbf{pyenv} est actif dans l'environnement, ce fichier activera automatiquement cette version.
 
 \subsection*{shell}
 La commande \texttt{shell} est utilisée pour définir une version de Python spécifique au \textit{shell}. Par exemple, pour tester la version \textbf{3.8-dev} de Python :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv shell 3.8-dev
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv shell 3.8-dev
 \end{lstlisting}
 
 Cette commande active la version spécifiée par la variable d'environnement \textbf{PYENV\_ VERSION}. Cette commande écrase toutes les applications ou tous les paramètres globaux. Pour désactiver la version, nous pouvons utiliser le drapeau \texttt{--unset}.
@@ -316,51 +316,51 @@ L'une des parties les plus déroutantes de \textbf{pyenv} est la façon dont la 
 \end{figure}
 
 Voyons un exemple rapide :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv versions
 * system (set by /home/utilisateur/.pyenv/version)
   3.12.10
   3.14.0a7
 \end{lstlisting}
 
 Ici, c'est le système Python qui est utilisé.
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv global 3.14.0a7
-$ pyenv versions
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv global 3.14.0a7
+|\userprompt| pyenv versions
   system
   3.12.10
 * 3.14.0a7 (set by /home/utilisateur/.pyenv/version)
 \end{lstlisting}
 
-\textbf{pyenv} utilise maintenant \textbf{3.6.8} comme version de \textbf{Python}. Il indique même l'emplacement du fichier qu'il a trouvé. Ce fichier existe effectivement :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| cat ~/.pyenv/version
+\textbf{pyenv} utilise maintenant \textbf{3.14.0a7} comme version de \textbf{Python}. Il indique même l'emplacement du fichier qu'il a trouvé. Ce fichier existe effectivement :
+\begin{lstlisting}[style=bash]
+|\userprompt| cat ~/.pyenv/version
 3.14.0a7
 \end{lstlisting}
 
 Maintenant, créons un fichier \textbf{.python-version} avec \texttt{local} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv local 3.12.10
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv local 3.12.10
+|\userprompt| pyenv versions
   system
 * 3.12.10 (set by /home/utilisateur/.python-version)
   3.14.0a7
-|\textcolor{terminalprompt}{user@machine: \$}| cat .python-version
+|\userprompt| cat .python-version
 3.12.10
 \end{lstlisting}
 
 \textbf{pyenv} indique comment il doit résoudre la commande python. Cette fois, elle provient de \textbf{~/.python-version}. A Noter que la recherche de \textbf{.python-version} est récursive.
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv shell 3.14.0a7
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv shell 3.14.0a7
+|\userprompt| pyenv versions
   system
   3.12.10
 * 3.14.0a7 (set by PYENV_VERSION environment variable)
 \end{lstlisting}
 
 Tout ce que cela a fait, c'est définir la variable d'environnement \texttt{\$PYENV\_VERSION} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| echo $PYENV_VERSION
+\begin{lstlisting}[style=bash]
+|\userprompt| echo $PYENV_VERSION
 3.14.0a7
 \end{lstlisting}
 
@@ -373,46 +373,45 @@ Tout ce que cela a fait, c'est définir la variable d'environnement \texttt{\$PY
 \end{description}
 
 \subsection*{Création d'un environnement virtuel}
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv virtualenv <version_python> <nom_envir
-    onnement>
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv virtualenv <version_python> <nom_environnement>
 \end{lstlisting}
 
-Une bonne pratique consiste à nommer les environnements du même nom que le projet. Par exemple, en travaillant sur \texttt{moni\_projet}  développé avec \textbf{Python 3.6.8} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv virtualenv 3.6.8 mon_projet
+Une bonne pratique consiste à nommer les environnements du même nom que le projet. Par exemple, en travaillant sur \texttt{mon\_projet} développé avec \textbf{Python 3.6.8} :
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv virtualenv 3.6.8 mon_projet
 \end{lstlisting}
 
 \subsection*{Activation}
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv local mon_projet
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv local mon_projet
 \end{lstlisting}
 
 Cela crée un fichier \textbf{.python-version} dans le répertoire de travail actuel et l'environnement sera automatiquement activé.
 
 Vérification :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which python
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv which python
 /home/utilisateur/.pyenv/versions/my_project/bin/python
 \end{lstlisting}
 
 Une nouvelle version a été créée sous le nom de \texttt{my\_project} et l'exécutable python pointe vers cette version. En regardant n'importe quel exécutable fourni par cet environnement, nous verrons la même chose. Prenons, par exemple, \textbf{pip} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which pip
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv which pip
 /home/utilisateur/.pyenv/versions/my_project/bin/pip
 \end{lstlisting}
 
 Activer / Désactiver :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv activate <nom_environnement>
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv deactivate
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv activate <nom_environnement>
+|\userprompt| pyenv deactivate
 \end{lstlisting}
 
 \section{Travailler avec plusieurs environnements}
 Supposons ces diverses versions de Python installées :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv versions
-* system (set by /home/krystof/.pyenv/version)
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv versions
+* system (set by /home/user/.pyenv/version)
   3.11.12
   3.14.0a7
 \end{lstlisting}
@@ -426,21 +425,21 @@ Nous souhaitons maintenant travailler sur deux projets différents :
 \end{itemize}
 
 Créons un environnement virtuel pour chaque projet :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| mkdir projet_1 projet_2
-|\textcolor{terminalprompt}{user@machine: \$}| cd projet_1
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which python3
+\begin{lstlisting}[style=bash]
+|\userprompt| mkdir projet_1 projet_2
+|\userprompt| cd projet_1
+|\userprompt| pyenv which python3
 /usr/bin/python3
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv virtualenv 3.11.12 projet_01
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv local projet_01
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -V
+|\userprompt| pyenv virtualenv 3.11.12 projet_01
+|\userprompt| pyenv local projet_01
+|\userprompt| python3 -V
 Python 3.11.12
-|\textcolor{terminalprompt}{user@machine: \$}| cd ../projet_2
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv which python3  # En changeant de répertoire on revient au système Python
+|\userprompt| cd ../projet_2
+|\userprompt| pyenv which python3  # En changeant de répertoire on revient au système Python
 /usr/bin/python3
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv virtualenv 3.14.0a7 projet_02
-|\textcolor{terminalprompt}{user@machine: \$}| pyenv local projet_02
-|\textcolor{terminalprompt}{user@machine: \$}| python3 -V
+|\userprompt| pyenv virtualenv 3.14.0a7 projet_02
+|\userprompt| pyenv local projet_02
+|\userprompt| python3 -V
 Python 3.14.0a7
 \end{lstlisting}
 
