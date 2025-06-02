@@ -6,20 +6,20 @@
 \textbf{virtualenv}\footnote{\url{https://virtualenv.pypa.io/en/latest/user_guide.html}} est un outil spécialement conçu pour créer des environnements Python isolés. Il s'agit d'un sur-ensemble de \textbf{venv}, offrant des fonctionnalités supplémentaires.
 
 Installation sur \textbf{Debian GNU/Linux} :
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \#}| aptitude install python3-virtualenv
+\begin{lstlisting}[style=bash]
+|\userprompt| sudo aptitude install python3-virtualenv
 \end{lstlisting}
 
 Création et activation de l'environnement virtuel (depuis le répertoire du projet):
-\begin{lstlisting}[style=terminal]
-|\textcolor{terminalprompt}{user@machine: \$}| virtualenv .venv/
+\begin{lstlisting}[style=bash]
+|\userprompt| virtualenv .venv/
 created virtual environment CPython3.13.3.final.0-64 in 288ms
   creator CPython3Posix(dest=/home/user/mon_projet/.venv, clear=False, no_vcs_ignore=False, global=False)
   seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/home/user/.local/share/virtualenv)
     added seed packages: pip==25.1.1
   activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-|\textcolor{terminalprompt}{user@machine: \$}| source .venv/bin/activate
-(venv) |\textcolor{terminalprompt}{user@machine: \$}|
+|\userprompt| source .venv/bin/activate
+(.venv) |\userprompt|
 \end{lstlisting}
 
 \textbf{virtualenv} crée l'environnement isolé beaucoup plus rapidement que le module \textbf{venv} intégré, ce qui est possible parce que l'outil met en cache les données d'application spécifiques à la plate-forme, qu'il peut lire rapidement.
