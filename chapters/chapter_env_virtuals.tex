@@ -10,14 +10,14 @@ Les environnements virtuels sont des outils essentiels pour tout développeur Py
 En créant un environnement virtuel pour chaque projet, nous pouvons installer les dépendances spécifiques à ce projet sans affecter les autres projets ou le système global. Cela est particulièrement utile lorsque nous travaillons sur des projets de grande envergure collaboratifs. Les environnements virtuels permettent de s'assurer que tous les membres de l'équipe utilisent les mêmes versions de bibliothèques, ce qui facilite la collaboration et réduit les risques d'erreurs.
 
 \section{Le module \textit{venv}}
-Pour une utilisation basique, \textbf{venv}\footnote{\url{https://docs.python.org/fr/3.13/library/venv.html}} est un excellent choix car il est déjà fourni lors de l'installation de Python. Le module \textbf{venv} est un outil intégré à Python qui permet de créer et de gérer des environnements virtuels de manière simple et efficace. Il est particulièrement utile pour les développeurs qui souhaitent isoler les dépendances de leurs projets sans avoir à installer des outils supplémentaires.
+Pour une utilisation basique, \textbf{venv}\footnote{\url{https://docs.python.org/fr/3.13/library/venv.html}} est un excellent choix car il est déjà fourni lors de l'installation de Python. Le module \textbf{venv} est un outil léger qui permet de créer et de gérer des environnements virtuels de manière simple et efficace. Il est particulièrement utile pour les développeurs qui souhaitent isoler les dépendances de leurs projets sans avoir à installer des outils supplémentaires.
 
 L'un des principaux avantages de \textbf{venv} est sa simplicité d'utilisation. Pour créer un nouvel environnement virtuel, il suffit d'exécuter la commande :
 \begin{lstlisting}[style=bash]
 |\userprompt| python3 -m venv nom_de_l_environnement
 \end{lstlisting}
 
-Cette commande crée un nouveau répertoire contenant une copie de l'interpréteur Python, ainsi que les répertoires nécessaires pour installer les bibliothèques spécifiques au projet.
+Cette commande crée un nouveau répertoire contenant une copie de l'interpréteur Python, ainsi que les répertoires nécessaires pour installer les bibliothèques spécifiques au projet. 
 
 Une fois l'environnement virtuel créé, nous pouvons l'activer en utilisant la commande appropriée (selon le système d'exploitation). Par exemple, sur un système Unix ou MacOS, nous utiliserons la commande :
 \begin{lstlisting}[style=bash]
@@ -47,9 +47,9 @@ Paramétrage de python3.13-venv (3.13.3-2) ...
 \end{lstlisting}
 
 \subsection*{Créer un environnement virtuel}
-Se rendre dans le répertoire du projet, et saisir la commande :
+Se rendre dans le répertoire du projet, et saisir la commande\footnote{Pour obtenir de l'aide on saisira la commande : \texttt{python3 -m venv -h}} :
 \begin{lstlisting}[style=bash]
-|\userprompt| python3 -m venv venv/
+|\userprompt| python3 -m venv .venv/
 \end{lstlisting}
 
 A noter que par convention l'environnement virtuel est souvent nommé \textbf{venv} ou \textbf{env} ou \textbf{.venv}. De plus, il n'est pas nécessaire d'utiliser une barre oblique à la fin du nom, mais elle est là pour rappeler que c'est un répertoire qui est créé.
@@ -59,6 +59,8 @@ Nous pouvons donc vérifier la présence du répertoire contenant notre environn
 |\userprompt| ls -a
 .  ..  .venv
 \end{lstlisting}
+
+A noter que si l'on déplace un environnement parce que nous avons déplacé son répertoire parent, nous devons recréer l'environnement à son nouvel emplacement. Sinon, les logiciels installés dans l'environnement risquent de ne pas fonctionner comme prévu.
 
 \subsection*{Activation de cet environnement virtuel}
 \begin{lstlisting}[style=bash]
@@ -176,7 +178,7 @@ Un environnement virtuel n’est finalement qu’une structure de répertoires q
 
 Pour isoler l'environnement virtuel du système, \textbf{venv} reproduit la structure des répertoires qu’une installation standard de Python crée.
 
-Le fichier \texttt{pyvenv.cfg} est un petit fichier qui contient quelques paires clé-valeur, paramètres essentiels pour faire fonctionner l'environnement virtuel :
+Le fichier \texttt{pyvenv.cfg} est un petit fichier qui contient quelques paires clé-valeur, dont une des clés (\texttt{home}) pointe vers l'installation Python à partir de laquelle la commande \texttt{python -m venv} a été exécutée. Ces paires de clé-valeurs sont des paramètres essentiels pour faire fonctionner l'environnement virtuel :
 \begin{lstlisting}[style=file]
 home = /usr/bin
 include-system-site-packages = false
@@ -284,6 +286,7 @@ Pour vérifier que l'interpréteur pointe bien vers l'environnement virtuel  et 
 
 Tant que nous fournissons le chemin d'accès à notre exécutable Python, nous n'avons pas besoin d'activer notre environnement virtuel pour profiter des avantages qu'il offre.
 
+Pour compléter ce qui précède, nous pourrons nous référer à la PEP 405\footnote{PEP 405 - Environnemets virtuels Python : \url{https://peps.python.org/pep-0405/}}. 
 \section{Personnaliser un environnement virtuel}
 \subsection*{Écraser un environnement virtuel et le remplacer par un autre}
 \begin{lstlisting}[style=bash]

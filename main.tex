@@ -12,6 +12,7 @@
 \usepackage{array}    % Pour des options supplémentaires de formatage de tableau
 \usepackage{calligra} % Pour utiliser la police cursive Calligra
 \usepackage{color}  % pour utiliser des couleurs
+\usepackage{enumitem}  % Personnaliser l'apperence des listes
 \usepackage{fancyhdr}  % Personnalisation en-tête et pied de page
 \usepackage{graphicx}
 \usepackage[top=2.5cm, bottom=2.5cm, left=2.8cm, right=2.8cm]{geometry} % Pour redimensionner les marges
@@ -238,6 +239,17 @@
   Juillet\or Août\or Septembre\or Octobre\or Novembre\or Décembre\fi
 }
 
+
+% ---------------------------------------------------------
+% --- STYLE PERSONNALISE POUR L'EBVIRONNEMENT ENUMERATE ---
+% ---------------------------------------------------------
+\newlist{coloredenum}{enumerate}{1}
+\setlist[coloredenum]{
+    label={\textcolor{nord14}{\arabic* --}},
+    ref=\arabic*
+}
+
+
 % ----------------------
 % --- TITRE DU LIVRE ---
 % ----------------------
@@ -314,5 +326,6 @@
 \addcontentsline{toc}{part}{Annexes}
 \part*{\textcolor{nord11}{Annexes}}
 \include{annexes/code_calendar.tex}
+\include{annexes/go_further.tex}
 
 \end{document}
