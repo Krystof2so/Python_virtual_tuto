@@ -47,12 +47,6 @@
 % Définir l'espace entre les paragraphes :
 \setlength{\parskip}{1em} % Ajoute un espace de 1em entre les paragraphes
 
-% Définir les caractères spéciaux :
-\DeclareUnicodeCharacter{2502}{|} % |
-\DeclareUnicodeCharacter{251C}{\textbackslash} % ├
-\DeclareUnicodeCharacter{2500}{-} % ─
-\DeclareUnicodeCharacter{2514}{\textbackslash} % └
-
 
 % -------------------------------
 % --- DEFINITION DES COULEURS ---
@@ -78,19 +72,6 @@
 \definecolor{nord13}{HTML}{ebcb8b} % Jaune
 \definecolor{nord14}{HTML}{a3be8c} % Vert
 \definecolor{nord15}{HTML}{b48ead} % Mauve
-
-% Pour le code Python (script) :
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{codegreen}{rgb}{0,0.6,0}
-
-% Pour le terminal (thème Nord) :
-\definecolor{terminalbackground}{HTML}{2e3440} % Polar Night
-\definecolor{terminaltext}{HTML}{81a1c1} % Bleu
-\definecolor{terminalcomment}{HTML}{d8dee9} % Blanc
-\definecolor{terminalprompt}{HTML}{a3be8c} % Vert
-\definecolor{promptuser}{HTML}{b48ead} % Mauve
-\definecolor{promptadm}{HTML}{d08770} % Orange
-\definecolor{linereturn}{HTML}{bf616a} % Rouge
 
 % Définir les couleurs bleu et jaune du logo Python :
 \definecolor{pythonblue}{RGB}{54,117,171}
@@ -208,22 +189,6 @@
     basicstyle=\ttfamily\color{nord0},
     numbers=none,
     breaklines=none, % pas de retour à la ligne automatique
-}
-
-% Environnement pour imiter un terminal :
-\lstdefinestyle{terminal}{
-    backgroundcolor=\color{terminalbackground}, % Fond gris foncé
-    basicstyle=\ttfamily\color{terminaltext}, % Police à chasse fixe et texte vert
-    keywordstyle=\color{terminaltext}, % Mots-clés en orange
-    commentstyle=\color{terminalcomment}, % Commentaires en blanc
-    numbers=none, % Pas de numéros de ligne
-    frame=none, % Pas de cadre
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=4,
-    breaklines=true, % Retour à la ligne automatique
-    postbreak=\mbox{\textcolor{linereturn}{$\hookrightarrow$}\space}, % Indicateur de retour à la ligne
-    escapeinside={||}
 }
 
 
