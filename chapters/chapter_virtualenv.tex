@@ -3,31 +3,93 @@
 \insertcitation{Le virtuel ne s'oppose pas au réel, mais seulement à l'actuel. Le virtuel possède une pleine réalité, en tant que virtuel.}{Gilles Deleuze}
 \bigskip
 
-\textbf{virtualenv}\footnote{\url{https://virtualenv.pypa.io/en/latest/user_guide.html}} est un outil spécialement conçu pour créer des environnements Python isolés. Il s'agit d'un sur-ensemble de \textbf{venv}, offrant des fonctionnalités supplémentaires.
+\textbf{virtualenv} est un outil puissant spécialement conçu pour créer des environnements Python isolés. Ces environnements isolés vous permettent d'installer des paquets spécifiques à un projet sans affecter les autres projets ou le système global. En d'autres termes, virtualenv vous offre la possibilité de créer un "sandbox" pour chaque projet, où vous pouvez installer et gérer les dépendances de manière indépendante. Il s'agit d'un sur-ensemble de \textbf{venv} qui offre des fonctionnalités supplémentaires.
 
+\textbf{virtualenv} est principalement une application en ligne de commande. Il modifie les variables d'environnement depuis le \textit{shell} pour créer un environnement Python isolé. Nous pouvons saisir la commande \texttt{virtualenv} suivi de \textit{flags}\footnote{Pour obtenir la liste complète des \textit{flags} et des options, on saisira la commande \texttt{virtualenv --help} une fois \textbf{virtualenv} installé.} qui contrôlent son comportement. Toutes les options ont des valeurs par défaut, seul un argument est requis : le nom ou le chemin de l'environnement virtuel à créer. Les valeurs par défaut des options de la ligne de commande peuvent être remplacées via un fichier de configuration ou des variables d'environnement.
+
+Dans ce court chapitre, je présente une utilisation de base de \textbf{virtualenv}. Pour aller plus loin, je ne saurais que conseiller la lecture de la documentation officielle\footnote{\url{https://virtualenv.pypa.io/en/latest/user_guide.html}}.
+
+\section{Installation}
 Installation sur \textbf{Debian GNU/Linux} :
 \begin{lstlisting}[style=bash]
 |\userprompt| sudo aptitude install python3-virtualenv
 \end{lstlisting}
 
-Création et activation de l'environnement virtuel (depuis le répertoire du projet):
+D'autres méthodes d'installation sont possible, notamment via \textbf{pip}, \textbf{pipx}, etc\footnote{Voir la documentation dédiée : \url{https://virtualenv.pypa.io/en/latest/installation.html}}.
+
+Vérification de l'installation et de la version installée :
 \begin{lstlisting}[style=bash]
-|\userprompt| virtualenv .venv/
+|\userprompt| virtualenv --version
+virtualenv 20.31.2 from /usr/lib/python3/dist-packages/virtualenv/__init__.py
+\end{lstlisting}
+
+\section{Création, activation et suppression de l'environnement virtuel}
+\subsection*{Création de l'environnement virtuel}
+\begin{lstlisting}[style=bash]
+|\userprompt| virtualenv .venv/  
 created virtual environment CPython3.13.3.final.0-64 in 288ms
   creator CPython3Posix(dest=/home/user/mon_projet/.venv, clear=False, no_vcs_ignore=False, global=False)
   seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/home/user/.local/share/virtualenv)
     added seed packages: pip==25.1.1
   activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-|\userprompt| source .venv/bin/activate
+\end{lstlisting}
+
+Cette commande crée un nouvel environnement virtuel dans un répertoire nommé \texttt{.venv} dans le répertoire courant. \textbf{virtualenv} crée l'environnement isolé beaucoup plus rapidement que le module \textbf{venv} intégré, ce qui est possible parce que l'outil met en cache les données d'application spécifiques à la plate-forme, qu'il peut lire rapidement.
+
+Sont également installés les paquets de base (un ou plusieurs parmi \textbf{pip}, \textbf{setuptools}, \textbf{wheel}) dans l'environnement virtuel créé. Ces paquets sont essentiels pour la gestion des dépendances et l'installation de nouveaux paquets. On retrouve également les scripts d'activation dans le répertoire des binaires, et un fichier \texttt{.gitignore} dont le contenu est vide, est aussi généré\footnote{L'option \texttt{--no-vcs-ignore} annule la création d'un tel fichier}.
+
+Nous pouvons également spécifier la version de Python (ici \texttt{3.12})à utiliser pour créer l'environnement virtuel (à condition que la version spécifiée soit présente sur le système)\footnote{Voir également les options de découverte (\textit{discovery}) : \url{https://virtualenv.pypa.io/en/latest/cli_interface.html\#section-discovery}. Pour d'autres options, affinant la configuration de l'installation d'un environnement virtuel, nous pouvons lire la suite de cette page de la documentation de \textbf{virtualenv}.} :
+\begin{lstlisting}[style=bash]
+|\userprompt| virtualenv --python=python3.12 .venv/
+\end{lstlisting}
+
+L'option \texttt{--clear} va supprimer le contenu du dossier de l'environnement virtuel avant de le créer. Cela est utile si nous souhaitons recréer un environnement virtuel existant.
+\begin{lstlisting}[style=bash]
+|\userprompt| virtualenv --clear .venv/
+\end{lstlisting}
+
+L'option \texttt{--no-site-packages} n'inclut pas les paquets du site global dans l'environnement virtuel. Cela isole complètement l'environnement virtuel des paquets installés globalement.
+\begin{lstlisting}[style=bash]
+|\userprompt| virtualenv --no-site-packages .venv/
+\end{lstlisting}
+
+A contrario l'option \texttt{--system-site-packages} inclut les paquets du site global dans l'environnement virtuel.
+
+\textit{NOTE} : l'API programmatique de \textbf{virtualenv}\footnote{Cf. \url{https://virtualenv.pypa.io/en/latest/user_guide.html\#programmatic-api}} permet de créer et de gérer des environnements virtuels directement depuis des scripts Python.
+
+\subsection*{Activation de l'environnement virtuel}
+\begin{lstlisting}[style=bash]
+|\userprompt| source .venv/bin/activate  
 (.venv) |\userprompt|
 \end{lstlisting}
 
-\textbf{virtualenv} crée l'environnement isolé beaucoup plus rapidement que le module \textbf{venv} intégré, ce qui est possible parce que l'outil met en cache les données d'application spécifiques à la plate-forme, qu'il peut lire rapidement.
+Le script \texttt{activate} se trouve dans le sous-répertoire \texttt{bin} de l'environnement virtuel et permet d'activer l'environnement virtuel sur les systèmes \textbf{GNU/Linux}.
 
-\textit{...A poursuivre...}
+Les scripts d'activation de \textbf{virtualenv} sont des scripts qui modifient les paramètres du \textit{shell} pour s'assurer que les commandes provenant de l'environnement virtuel Python prennent la priorité sur les chemins système. Par exemple, si l'appel à \textbf{pip} depuis le \textit{shell} renvoyait le \textbf{pip} du Python système avant l'activation, une fois l'activation effectuée, cela devrait faire référence au \textbf{pip} de l'environnement virtuel.
+
+Pour confirmer que l'environnement virtuel est bien activé :
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| which python3
+(.venv) |\userprompt| .venv/bin/python3
+\end{lstlisting}
+
+\texttt{which python3} montre le chemin vers l'exécutable Python actuellement utilisé. Si l'environnement virtuel est activé, le chemin devrait pointer vers l'exécutable Python à l'intérieur du répertoire \texttt{.venv}.
+
+Les scripts provisionnent également une commande \texttt{deactivate} qui vous permet d'annuler l'opération :
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| deactivate
+|\userprompt|
+\end{lstlisting}
+
+\subsection*{Suppression de l'environnement virtuel}
+Pour supprimer un environnement virtuel créé avec \textbf{virtualenv}, nous devons simplement supprimer le répertoire de l'environnement virtuel. Voici les étapes à suivre :
+\begin{enumerate}
+    \item Désactiver l'environnement virtuel.
+    \item Supprimer le répertoire de l'environnement virtuel 
+\end{enumerate}
 
 \begin{center}
     \pgfornament[width=0.3\textwidth]{88} % 88 est le numéro de l'ornement
 \end{center}
 
-
+Après nous être familairisés à la création d'environnements virtuels et d'explorer les fonctionnalités de base de \textbf{virtualenv} dans ce court chapitre, pour maintenant tirer pleinement parti de ces environnements, il est crucial de savoir comment installer et gérer les paquets Python de manière efficace. C'est là que \textbf{pip}, le gestionnaire de paquets Python, entre en jeu. Dans le chapitre suivant, nous allons découvrir comment utiliser \textbf{pip} pour installer, mettre à jour et supprimer des paquets Python, ainsi que pour gérer les dépendances de nos projets. 
