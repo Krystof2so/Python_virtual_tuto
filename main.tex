@@ -240,14 +240,30 @@
 }
 
 
-% ---------------------------------------------------------
-% --- STYLE PERSONNALISE POUR L'EBVIRONNEMENT ENUMERATE ---
-% ---------------------------------------------------------
+% ------------------------------------------
+% --- STYLE PERSONNALISE POUR LES LISTES ---
+% ------------------------------------------
+% Environnement 'enumerate' avec des numéros en vert :
 \newlist{coloredenum}{enumerate}{1}
 \setlist[coloredenum]{
     label={\textcolor{nord14}{\arabic* --}},
     ref=\arabic*
 }
+
+% Définir un nouvel environnement basé sur description
+\newenvironment{optionlist}
+  {\begin{list}{}{\setlength{\labelwidth}{0pt}%
+    \setlength{\leftmargin}{0.5cm}%
+    \setlength{\labelsep}{0.5cm}%
+    \setlength{\itemindent}{0pt}%
+    \setlength{\listparindent}{0pt}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\partopsep}{0pt}%
+      \renewcommand{\makelabel}[1]{\fontfamily{zi4}\selectfont\texttt{##1}\hfil}%
+  }}
+  {\end{list}}
 
 
 % ----------------------

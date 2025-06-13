@@ -19,6 +19,13 @@ Cela présente trois avantages principaux :
     \item L'utilisation d'une version de paquetage spécifique pour un projet sans affecter les autres projets.
 \end{itemize}
 
+Par défaut, lors de la création d'un environnement virtuel, l'outil \textbf{pip} est installé au sein de cet environnement\footnote{Il est toutefois, comme nous vu l'avons précédemment, de créer un environnement sans y installer \textbf{pip}. Dans ce cas nous pourrons l'installer ultèrieurement à l'aide de \textbf{ensurepip} (\url{https://docs.python.org/fr/3.13/library/ensurepip.html}) ou via le script \textbf{get-pip.py} (\url{https://pip.pypa.io/en/stable/installation/\#get-pip-py}).}, permettant alors d'installer des paquets indépendamment du système global.
+
+Pour une mise à jour de \textbf{pip} si nécessaire :
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install --upgrade pip
+\end{lstlisting}
+
 \section{Installer des paquets avec \textit{pip}}
 Le langage Python dispose d'une bibliothèque standard, mais également de paquets publiés sur le \textbf{Python Package Index}\footnote{\url{https://pypi.org/}}, également connu sous le nom de \textbf{PyPI}, qui  héberge une vaste collection de paquets, y compris des cadres (\textit{framework}) de développement, des outils et des bibliothèques.
 
@@ -27,10 +34,16 @@ Une fois l'environnement virtuel créé et activé, toutes les commandes \textbf
 
 Pour installer des paquets, \textbf{pip} fournit la commande \texttt{install} : 
 \begin{lstlisting}[style=bash]
-(.venv)|\userprompt| python3 -m pip install nom_paquet
+(.venv) |\userprompt| python3 -m pip install nom_paquet
 \end{lstlisting}
 
 La commande \textbf{pip} recherche le paquet dans \textbf{PyPI}, résout ses dépendances (dépendances répertoriées dans les métadonnées du paquet) et installe tout ce qui est nécessaire dans l'environnement virtuel actuel. C'est toujours la dernière version du paquetage qui est installée. 
+
+Mais nous pouvons, bien entendu, spécifier des versions précises :
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip install NonPaquet==1.0.4  # version spécifique
+(.venv) |\userprompt| python3 -m pip install 'NomPaquet>=1.0.4'  # version minimale
+\end{lstlisting}
 
 Il est également possible d'installer plusieurs paquets en une seule commande :
 \begin{lstlisting}[style=bash]
@@ -96,7 +109,7 @@ Collecting git+https://github.com/realpython/rptree
   Preparing metadata (pyproject.toml) ... done
 Building wheels for collected packages: rptree
   Building wheel for rptree (pyproject.toml) ... done
-  Created wheel for rptree: filename=rptree-0.1.1-py3-none-any.whl size=5098 sha256=ea7c230770b418e6c83cc3ab48525c934051303713ea1fd195110 9e1c41a4451
+  Created wheel for rptree: filename=rptree-0.1.1-py3-none-any.whl size=5098 sha256=ea7c230770b418e6c83cc3ab48525c934051303713ea1fd195 1109e1c41a4451
   Stored in directory: /tmp/pip-ephem-wheel-cache-td03c1n1/wheels/bd/b3/32/3714ad3461eca52f1805ec11248c17c60e77c1ae8746f79179
 Successfully built rptree
 Installing collected packages: rptree
@@ -207,6 +220,8 @@ PySide6_Addons>=6.9.0, <6.9.5
 
 Page de la documentation officielle permettant de visualiser divers exemples de formats de fichier d'exigence : \url{https://pip.pypa.io/en/stable/cli/pip_install/#pip-install-examples}.
 
+Page de référence concernant le format des fichiers d'exigence : \url{https://pip.pypa.io/en/stable/reference/requirements-file-format/}
+
 \subsection*{Séparation des dépendances de production et de développement}
 Pour cela on va créer un second fichier d'exigences, \texttt{requirements\_dev.txt}, pour lister les outils supplémentaires (par exemple \textbf{pytest} permettant de mettre en place un environnement de développement) :
 \begin{lstlisting}[style=file]
@@ -226,8 +241,17 @@ Maintenant, dans l'environnement de développement, il suffit d’exécuter cett
 
 Dans un environnement de production, il suffit uniquement d’installer les exigences de production, soit d'utiliser le fichier \texttt{requirements.txt}.
 
-\subsection*{Geler les exigences pour la production}
+\subsection*{Les fichiers de gel et de contraintes}
 Une fois le projet prêt pour la publication, il nous suffira de créer le fichier \texttt{requirement} \texttt{s\_lock.txt}.
+
+Les fichiers de contraintes sont des fichiers d'exigence qui contrôlent uniquement la version d'une dépendance qui est installée, et non si elle est installée ou non\footnote{\url{https://pip.pypa.io/en/stable/user_guide/i\#constraints-files}}.
+
+\subsection*{Priorité aux métadonnées d'un paquet}
+Il est à noter que lorsque \textbf{pip} installe un paquet Python, il détermine les dépendances de ce paquet en utilisant les métadonnées \texttt{install\_requires}. Ces métadonnées sont généralement définies dans le fichier \texttt{setup.py} ou \texttt{setup.cfg} du paquet.
+
+Contrairement à ce que certains pourraient penser, \textbf{pip} ne détermine pas les dépendances en découvrant ou en lisant les fichiers \texttt{requirements.txt} intégrés dans les projets. Les fichiers \texttt{requirements.txt} sont généralement utilisés pour lister les dépendances d'un projet au niveau supérieur, mais ils ne sont pas utilisés par \textbf{pip} pour résoudre les dépendances des paquets individuels.
+
+Pour aller plus loin concernant la gestion des dépendances : \url{https://pip.pypa.io/en/stable/topics/dependency-resolution/}
 
 \section{Désinstaller des paquets}
 Lorsque que l'on installe un paquet il arrive que des dépendances (d'autres paquets) soient installées. Plus on installe de paquets, plus il y a de chances que plusieurs paquets aient des dépendances communes. C’est là que la commande \texttt{show} s’avère utile. Ainsi, avant de désinstaller un paquet, on s'assure d’exécuter la commande \texttt{show} pour ce paquet. Si le champ \texttt{Required-by} est vide, cela signifie qu'il n'y a aucune interdépendance avec un autre paquet. Par contre il faut également lancer la commande \texttt{show} sur les autres dépendances pour procéder à la même vérification. Une fois vérifié l’ordre des dépendances des paquets que nous souhaitons désinstaller, nous pouvez les supprimer en utilisant la commande \texttt{uninstall} :
@@ -253,11 +277,145 @@ Il est également possible de désinstaller tous les packages répertoriés dans
 Remarque : en travaillant dans un environnement virtuel, il peut être moins compliqué de supprimer l'environnement virtuel et d’en créer un nouveau. Ensuite, nous installerons les paquets dont nous avons besoin au lieu d’essayer de désinstaller les paquets dont nous n’avons pas besoin.
 
 Utiliser \texttt{pip uninstall} est un bon moyen de désinstaller un paquet  du système si celui-ci a été installé accidentellement.
-\bigskip
+
+\section{Les commandes}
+\subsection*{Gestion de l'environnement et introspection}
+\subsubsection*{\textit{pip install}}
+\begin{optionlist}
+\item[pip install <package> :] Installe un paquet Python.
+\item[pip install <package>==<version> :] Installe une version spécifique d'un paquet.
+\item[pip install <package1> <package2> :] Installe plusieurs paquets en une seule commande.
+\item[pip install -r <requirements.txt> :] Installe les paquets listés dans un fichier de requirements.
+\item[pip install \textendash\textendash upgrade <package> :] Met à jour un paquet déjà installé à la dernière version disponible.
+\item[pip install -U <package> :] Met à jour un paquet déjà installé à la dernière version disponible (équivalent à \verb|--upgrade|).
+\item[pip install \textendash\textendash no-deps <package> :] Installe un paquet sans installer ses dépendan- ces.
+\item[pip install \textendash\textendash force-reinstall <package> :] Force la réinstallation d'un paquet mê- me s'il est déjà installé.
+\item[pip install \textendash\textendash no-index :] Ignore l'index de paquet et installe uniquement à partir des sources locales ou des fichiers de requirements.
+\item[pip install \textendash\textendash find-links <url> :] Recherche les paquets à installer dans l'URL spécifiée.
+\item[pip install \textendash\textendash no-cache-dir :] Désactive le cache pour l'installation des paquets.
+\end{optionlist}
+
+Pour d'autres options : \url{https://pip.pypa.io/en/stable/cli/pip_install/\#options}
+
+\subsubsection*{\textit{pip uninstall}}
+\begin{optionlist}
+\item[pip uninstall -r <file> :] Désinstallez tous les paquets répertoriés dans le fichier des exigences fourni (équivalent à \verb|--requirement|).
+\item[pip uninstall -y :] Ne demandez pas de confirmation pour les suppressions de désinstallation (équivalent à \verb|--yes|).
+\end{optionlist}
+
+Pour d'autres options : \url{https://pip.pypa.io/en/stable/cli/pip_uninstall/\#options}
+
+\subsubsection*{\textit{pip inspect}}
+La commande \texttt{pip inspect} a été ajoutée dans la version \textbf{22.2} de \textbf{pip}. Elle permet d'inspecter le contenu d'un environnement Python et de produire un rapport au format \texttt{JSON}. Ce rapport contient des informations détaillées sur les paquets installés dans l'environnement.
+
+La syntaxe de cette commande est :
+\begin{lstlisting}[style=bash]
+(.venv) |\userprompt| python3 -m pip inspect [options]
+\end{lstlisting}
+
+Exemple d'utilisation :
+\begin{lstlisting}[style=bash]
+|\userprompt| python3 -m virtualenv .venv/
+created virtual environment CPython3.13.3.final.0-64 in 170ms
+  creator CPython3Posix(dest=/home/krystof/Documents/DEVELOPPEMENT/BAC_A_SABLE_DE_CODES/Python/TEST_PIP_INSPECT/.venv, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, via=copy, app_data_dir=/home/krystof/.local/share/virtualenv)
+    added seed packages: pip==25.1.1
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+|\userprompt| source .venv/bin/activate
+(.venv) |\userprompt| python3 -m pip inspect --local
+{
+  "version": "1",
+  "pip_version": "25.1.1",
+  "installed": [
+    {
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "pip",
+        "version": "25.1.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "The PyPA recommended tool for installing Python packages.",
+        "description": "pip - The Python Package Installer\n==================================\n\n.. |pypi-version| image:: https://img.shields.io/pypi/v/pip.svg\n   :target: https://pypi.org/project/pip/\n   :alt: PyPI\n\n.. |python-versions| image:: https://img.shields.io/pypi/pyversions/pip\n   :target: https://pypi.org/project/pip\n   :alt: PyPI - Python Version\n\n.. |docs-badge| image:: https://readthedocs.org/projects/pip/badge/?version=latest\n   :target: https://pip.pypa.io/en/latest\n   :alt: Documentation\n\n|pypi-version| |python-versions| |docs-badge|\n\npip is the `package installer`_ for Python. You can use pip to install packages from the `Python Package Index`_ and other indexes.\n\nPlease take a look at our documentation for how to install and use pip:\n\n* `Installation`_\n* `Usage`_\n\nWe release updates regularly, with a new version every 3 months. Find more details in our documentation:\n\n* `Release notes`_\n* `Release process`_\n\nIf you find bugs, need help, or want to talk to the developers, please use our mailing lists or chat rooms:\n\n* [...]
+\end{lstlisting}
+
+Ceci n'est qu'un extrait de la sortie.
+
+Pour d'autres options : \url{https://pip.pypa.io/en/stable/cli/pip_inspect}
+
+\subsubsection*{\textit{pip list}}
+La commande \texttt{pip list} est utilisée pour lister tous les paquets Python installés dans l'environnement actuel. Voici les options les plus courantes de cette commande :
+\begin{optionlist}
+\item [pip list \textendash\textendash outdated :] Permet de lister les paquets installés qui sont obsolètes par rapport aux versions disponibles sur \textbf{PyPI}.
+\item [pip list \textendash\textendash uptodate :] Permet de lister les paquets installés qui sont à jour.
+\item [pip list \textendash\textendash not-required :] Permet de lister les paquets qui ne sont pas requis par d'autres paquets (c'est-à-dire les paquets qui ne sont pas des dépendances).
+\end{optionlist}
+
+Pour d'autres options : \url{https://pip.pypa.io/en/stable/cli/pip_list}
+
+\subsubsection*{\textit{pip show}}
+La commande \texttt{pip show} affiche des informations détaillées sur un ou plusieurs paquets Python installés. Les informations sont présentées dans un format conforme aux en-têtes de courrier électronique (\textit{RFC-compliant mail header format}), ce qui signifie que chaque ligne de sortie est formatée comme un en-tête de courrier électronique, avec un nom de champ suivi de deux-points et de l'information correspondante.
+
+L'option \texttt{-f} (ou \texttt{\textendash\textendash files}) permet d'afficher la liste complète des fichiers installés pour chaque paquet. Cela peut être utile pour voir tous les fichiers associés à un paquet particulier, y compris les modules, les scripts et les fichiers de données.
+
+\subsubsection*{\textit{pip freeze}}
+La commande \texttt{pip freeze} est utilisée pour générer une liste de tous les paquets Python installés dans l'environnement actuel, ainsi que leurs versions. Cette commande est particulièrement utile pour créer un fichier \texttt{requirements.txt}, qui peut ensuite être utilisé pour réinstaller tous les paquets avec les mêmes versions dans un autre environnement.
+
+Complément d'informations : \url{https://pip.pypa.io/en/stable/cli/pip_freeze}
+
+\subsubsection*{\textit{pip check}}
+La commande \texttt{pip check} vérifie les dépendances de tous les paquets installés dans l'environnement Python actuel. Elle signale les conflits de versions et les dépendances manquantes ou incompatibles. Cela peut aider à identifier et résoudre les problèmes de dépendances dans un environnement Python. Si tous les paquets sont compatibles et que leurs dépendances sont satisfaites, la commande \texttt{pip check} ne produira aucune sortie.
+
+\subsection*{Résolution des dépendances}
+\subsubsection*{\textit{pip lock}}
+Il s'agit d'une fonctionnalité expérimentale de \textbf{pip} qui permet de verrouiller les paquets Python et leurs dépendances à partir de différentes sources.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_lock/}
+
+\subsection*{Gestion des fichiers de distribution}
+\subsubsection*{\textit{pip download}}
+La commande \texttt{pip download} est une commande qui permet de télécharger des paquets Python (et éventuellement leurs dépendances), sans les installer. Cela est particulièrement utile si l'on souhaite créer un cache local ou pour bénéficier d'une copie hors ligne des paquets.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_download/}
+
+\subsubsection*{\textit{pip wheel}}
+La commande \texttt{pip wheel} permet de compiler (ou précompiler) des paquets Python en fichiers \texttt{.whl} (\textbf{wheel}), un format binaire standard pour la distribution de paquets Python. Contrairement à \texttt{pip download}, qui télécharge des paquets existants, \texttt{pip wheel} peut construire un fichier \texttt{.whl} à partir des sources.
+
+Créer un fichier \texttt{.whl} permet d'obtenir un paquet réutilisable ailleurs et de gagner du temps à l’installation (l’installation à partir de \texttt{.whl} est plus rapide qu’à partir de \texttt{.tar.gz}. Cela est intéressant afin de préparer des paquets pour un environnement sans accès Internet.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_wheel/}
+
+\subsubsection*{\textit{pip hash}}
+La commande \texttt{pip hash} est une commande qui permet de calculer l’empreinte cryptographique (\textbf{hash}) d’un ou plusieurs fichiers (souvent des archives de paquets \texttt{.tar.gz} ou \texttt{.whl}). Ces empreintes sont principalement utilisées pour sécuriser les fichiers listés dans un fichier \texttt{requirements.txt}, afin de garantir leur intégrité au moment de l’installation.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_hash/}
+
+\subsection*{Information \textit{Package Index}}
+\subsubsection*{\textit{pip index}}
+La commande \texttt{pip index} fait partie des sous-commandes expérimentales de \textbf{pip}. Elle permet d’interagir avec un index de paquets (par défaut \textbf{PyPI}) pour obtenir des informations sur les versions disponibles d’un paquet, sans avoir à l’installer ou à le télécharger.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_index/}
+
+\subsection*{Gestion de l'outil \textit{pip}}
+\subsubsection*{\textit{pip cache}}
+La commande \texttt{pip cache} permet d’interagir avec le cache local de \textbf{pip}. Elle est utile pour diagnostiquer, nettoyer ou optimiser l'utilisation du cache.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_cache/}
+
+\subsubsection*{\textit{pip config}}
+La commande \texttt{pip config} permet de lire, modifier ou supprimer la configuration de \textbf{pip}. Elle sert à gérer les paramètres globaux ou locaux que \textbf{pip} utilise, comme le dépôt \textbf{PyPI}, le proxy, les options par défaut, etc.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_config/}
+
+\subsubsection*{\textit{pip debug}}
+La commande \texttt{pip debug} est une commande utile de diagnostic qui permet d’afficher des informations détaillées sur l’environnement Python et la configuration de \textbf{pip}. Elle est très pratique pour le débogage, la vérification de compatibilité, ou pour fournir des informations lors de rapports de \textit{bug}.
+
+Voir : \url{https://pip.pypa.io/en/stable/cli/pip_debug/}
+
+\bigskip 
 
 \begin{center}
     \pgfornament[width=0.3\textwidth]{88} % 88 est le numéro de l'ornement
 \end{center}
 
-Nous venons d'explorer les multiples facettes de \textbf{pip}, en découvrant comment installer, mettre à jour et gérer les dépendances de nos projets avec facilité et précision. Cependant, la gestion des environnements de développement ne s'arrête pas là. Pour aller plus loin et optimiser encore davantage le flux de travail, il est essentiel de maîtriser les outils qui permettent de gérer plusieurs versions de Python sur un même système. C'est là que \textbf{pyenv} entre en jeu. 
-
+Avec l'outil \textbf{pip}, nous avons exploré comment installer, mettre à jour et gérer les dépendances de nos projets avec facilité et précision. Cependant, la gestion des environnements de développement ne s'arrête pas là. Pour aller plus loin et optimiser encore davantage le flux de travail, il est essentiel de maîtriser les outils qui permettent de gérer plusieurs versions de Python sur un même système et c'est ce que nous allons voir maintenant avec l'outil \textbf{poetry}, puis par la suite avec un l'outil moderne \textbf{uv}.
