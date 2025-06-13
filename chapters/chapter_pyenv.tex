@@ -5,7 +5,7 @@
 
 À mesure que l’on progresse dans la pratique du langage Python, une réalité s’impose : tous les projets ne parlent pas le même dialecte. Certains réclament une version ancienne, d’autres tirent parti des nouveautés les plus récentes. Installer plusieurs versions de Python sur une même machine peut alors devenir source de confusion, voire de conflit.
 
-C’est ici qu’intervient \textbf{pyenv}, un outil discret mais redoutablement efficace, qui permet de jongler aisément entre les versions de Python. À la manière de l’eau qui épouse la forme du vase sans jamais perdre sa nature, \textbf{pyenv} s’adapte à chaque projet, chaque environnement, sans rien imposer au système global.
+C’est ici qu’intervient \textbf{pyenv}, un outil discret mais très efficace, qui permet de jongler aisément entre les versions de Python. À la manière de l’eau qui épouse la forme du vase sans jamais perdre sa nature, \textbf{pyenv} s’adapte à chaque projet, chaque environnement, sans rien imposer au système global.
 
 Ce chapitre nous guidera pas à pas dans la découverte et l’utilisation de \textbf{pyenv} : de son installation à sa maîtrise au quotidien. L’objectif n’est pas seulement de fournir un outil de plus, mais de proposer une nouvelle manière d’interagir avec notre environnement de développement — plus souple, plus propre, et infiniment plus adaptée.
 
@@ -48,7 +48,44 @@ Puis relancer le \textit{shell} :
 |\userprompt| exec "\$SHELL"
 \end{lstlisting}
 
-Note de désinstallation  : saisir la commande \verb|rm -Rf ~/.pyenv|, puis supprimer les lignes ajoutées au fichier \texttt{.zshrc}. Et enfin, relancer le \textit{shell}.
+\subsection*{Désinstaller \textit{pyenv}}
+Saisir la commande \verb|rm -Rf ~/.pyenv|, puis supprimer les lignes ajoutées au fichier \texttt{.zshrc}. Et enfin, relancer le \textit{shell}.
+
+\subsection*{Mettre à jour \textit{pyenv}}
+Passons par exemple de la version \textbf{2.5.7} à la dernière version en cours\footnote{Manipulation réalisée le 13.06.2025} :
+\begin{lstlisting}[style=bash]
+|\userprompt| cd ~/.pyenv
+|\userprompt| git pull
+remote: Enumerating objects: 59, done.
+remote: Counting objects: 100% (59/59), done.
+remote: Compressing objects: 100% (21/21), done.
+remote: Total 49 (delta 33), reused 38 (delta 25), pack-reused 0 (from 0)
+[...]
+ 14 files changed, 92 insertions(+), 12 deletions(-)
+ create mode 100644 plugins/python-build/share/python-build/3.10.18
+ create mode 100644 plugins/python-build/share/python-build/3.11.13
+ create mode 100644 plugins/python-build/share/python-build/3.12.11
+ create mode 100644 plugins/python-build/share/python-build/3.13.4
+ create mode 100644 plugins/python-build/share/python-build/3.13.4t
+ create mode 100644 plugins/python-build/share/python-build/3.13.5
+ create mode 100644 plugins/python-build/share/python-build/3.13.5t
+ delete mode 100644 plugins/python-build/share/python-build/3.14.0b1t
+ rename plugins/python-build/share/python-build/{3.14.0b1 => 3.14.0b2} (59%)
+ create mode 100644 plugins/python-build/share/python-build/3.14.0b2t
+ create mode 100644 plugins/python-build/share/python-build/3.9.23
+ |\userprompt| pyenv --version
+ pyenv 2.6.2
+\end{lstlisting}
+
+Création d'un alias dans \texttt{.zshrc} pour automatiser la mise à jour de \textbf{pyenv} :
+\begin{lstlisting}[style=file]
+alias pyenv-update='cd ~/.pyenv && git pull && cd -'
+\end{lstlisting}
+
+Autre commande à disposition :
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv update
+\end{lstlisting}
 
 \section{Utiliser \textit{pyenv} pour installer \textit{Python}}
 Pour visualiser toutes les versions disponibles de \textbf{CPython} :
@@ -107,6 +144,12 @@ Installed Python-3.14.0a7 to /home/utilisateur/.pyenv/versions/3.14.0a7
 \end{lstlisting}
 
 \texttt{-v} propose le mode \texttt{verbose}. A noter que l'installation prendra environ 340 Mo d'espace disque.
+
+La plupart des versions Python fournies par \textbf{Pyenv} sont des versions source. Quand on lance la commande \texttt{pyenv install <version>}, \textbf{Pyenv} télécharge le code source de Python (et non un binaire précompilé). Ce code est ensuite compilé localement sur la machine. Mais pour cela il est nécessaire d'avoir les dépendances de compilation (compilateur C, bibliothèques système, etc.) déjà installées :
+\begin{lstlisting}[style=bash]
+|\userprompt| # Sur Debian GNU/Linux
+|\userprompt| sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+\end{lstlisting}
 
 Désinstallation :
 \begin{lstlisting}[style=bash]
@@ -263,6 +306,13 @@ Pour ne visualiser que la version active :
 \begin{lstlisting}[style=bash]
 |\userprompt| pyenv version
 system (set by /home/utilisateur/.pyenv/version)
+\end{lstlisting}
+
+\subsection*{latest}
+Visualiser quelle version précise serait utilisée en fonction du préfixe (dernière version disponible) :
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv latest -k 3.12
+3.12.11
 \end{lstlisting}
 
 \subsection*{which}
@@ -450,5 +500,5 @@ Plus besoin de se rappeler d'activer les environnements : en passant d'un projet
     \pgfornament[width=0.3\textwidth]{88} % 88 est le numéro de l'ornement
 \end{center}
 
-Nous venons d'explorer les multiples facettes de \textbf{pyenv}, un outil puissant qui permet de gérer efficacement différentes versions de Python. Grâce à \textbf{pyenv}, nous pouvons désormais basculer entre les versions de Python avec une facilité déconcertante, optimisant ainsi nos environnements de développement pour répondre aux besoins spécifiques de chaque projet. Cependant, la gestion des dépendances et des paquets reste un aspect crucial du développement Python. C'est là que \textbf{poetry} entre en jeu. Dans le chapitre suivant, nous plongerons dans les potentialités de \textbf{poetry}, un outil moderne qui simplifie la gestion des dépendances et des environnements virtuels, nous permettant de gérer nos projets Python avec une précision et une efficacité inégalées.
+\textbf{pyenv} est donc un outil puissant qui permet de gérer efficacement différentes versions de Python. Grâce à lui nous pouvons désormais basculer entre les versions de Python avec une facilité déconcertante, optimisant ainsi nos environnements de développement pour répondre aux besoins spécifiques de chaque projet. Cependant, la gestion des dépendances et des paquets reste un aspect crucial du développement Python. Dans le chapitre suivant, nous allons nous plonger dans les potentialités de \textbf{poetry}, un outil moderne qui simplifie la gestion des dépendances et des environnements virtuels, nous permettant de gérer nos projets Python avec une grande précision. 
 
