@@ -3,11 +3,9 @@
 \insertcitation{La poésie est ce qu'il y a de plus réel, c'est ce qui n'est complètement vrai que dans un autre monde.}{Charles Baudelaire}
 \bigskip
 
-Dans le vaste écosystème du développement Python, la gestion des dépendances et des environnements virtuels peut rapidement devenir un casse-tête. C'est là que \textbf{poetry}\footnote{Site officiel : \url{https://python-poetry.org/}} entre en scène, se présentant comme une solution moderne et élégante pour simplifier ces tâches complexes. \textbf{Poetry} (disponible depuis la version \textbf{3.9} de Python) est bien plus qu'un simple gestionnaire de paquet, c'est un outil complet qui permet de gérer les dépendances, de créer des environnements virtuels, et de \textit{packager} des projets Python avec une facilité déconcertante.
+Dans le vaste écosystème du développement Python, la gestion des dépendances et des environnements virtuels peut rapidement devenir un casse-tête. \textbf{poetry}\footnote{Site officiel : \url{https://python-poetry.org/}} se présente alors comme une solution moderne et élégante pour simplifier ces tâches complexes. Disponible depuis la version \textbf{3.9} de Python, il est bien plus qu'un simple gestionnaire de paquet, c'est un outil complet qui permet de gérer les dépendances, de créer des environnements virtuels, et de \textit{packager} des projets Python.
 
-\textbf{Poetry} rend tout cela possible. En offrant une interface simple et puissante, \textbf{poetry} nous permet de nous concentrer sur ce qui compte vraiment : le développement de nos applications.
-
-Dans ce chapitre, nous allons explorer les multiples facettes de \textbf{poetry}. Nous commencerons par une introduction à ses fonctionnalités de base, puis nous plongerons dans des aspects plus avancés, tels que la gestion des environnements virtuels, la résolution des dépendances, et le packaging de projets. \textbf{poetry} a quelque chose à offrir pour rendre le flux de travail plus efficace et agréable.
+\textbf{Poetry} rend tout cela possible. En offrant une interface simple et puissante, \textbf{poetry} nous permet de nous concentrer sur ce qui compte vraiment : le développement de nos applications. Et c'est ce que nous allons exporer dans ce chapitre.
 
 \section{Installation}
 \textbf{Poetry} est distribué comme un paquet Python lui-même, il est donc installable dans un environnement virtuel en utilisant \textbf{pip}, tout comme n’importe quel autre paquet externe :
@@ -136,7 +134,7 @@ De même, le sous-répertoire \texttt{tests/} est un autre paquetage Python dest
 \textbf{Poetry} génère également un fichier \texttt{README} vide, ainsi qu'un fichier de configuration nommé \texttt{pyproject.toml} avec les métadonnées minimales requises pour le projet\footnote{Cf. le PEP 518 : \url{https://peps.python.org/pep-0518/}}
 
 \subsection*{\textit{pyproject.toml}}
-L'un des fichiers les plus importants pour travailler avec \textbf{Poetry} est le fichier \texttt{pyproject.toml} :
+L'un des fichiers les plus importants pour travailler avec \textbf{Poetry} est le fichier \texttt{pyproject.\\toml} :
 \begin{lstlisting}[style=file]
 [project]
 name = "package-project"
