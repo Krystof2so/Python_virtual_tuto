@@ -5,14 +5,12 @@
 
 \textbf{uv} est un gestionnaire de dépendances ainsi qu'un outil de \textit{packaging} conçu pour offrir une performance optimale, tout en se révélant être d'une grande simplicité au niveau de son utilisation. \textbf{uv} se distingue par sa capacité à résoudre rapidement (écrit en \textbf{Rust}\footnote{\url{https://www.rust-lang.org/fr}} une attention fut portée sur la rapidité d'exécution) les dépendances et à créer des environnements virtuels de manière transparente.
 
-Dans ce chapitre, nous allons explorer les grandes lignes de l'outil \textbf{uv} et découvrir comment il peut transformer notre approche du développement Python. Nous commencerons par une introduction à ses fonctionnalités de base, puis nous plongerons dans des aspects plus avancés, tels que la gestion des environnements virtuels, la résolution des dépendances, et le \textit{packaging} de projets, optimisant ainsi notre flux de travail.
-
-Cet outil saura certainement devenir un allié incontournable, voire indispensable, pour notre boîte à outils de développement Python.
+Cet outil, après la lecture de ce chapitre, saura certainement devenir un allié incontournable, voire indispensable, pour notre boîte à outils de développement Python.
 
 \section{Présentation d'\textit{uv}}
 L'idée principale d'\textbf{uv} est d'accélérer le flux en accélérant les actions de gestion de projet. Par exemple, pour l'installation de paquets, \textbf{uv} est dix à cent fois plus rapide que \textbf{pip}.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.7\textwidth]{IMG/uv_graph.png} % Remplacez par le chemin de votre image
     \caption{Graphique illustrant la rapidité, tiré de la documentation officielle}
@@ -32,12 +30,14 @@ Caractéristiques d'\textbf{uv} :
 \end{itemize}
 \medskip
 
-Site officiel : \url{https://docs.astral.sh/uv/}
-
-Serveur \textbf{Discord} : \url{https://discord.gg/JSsj35HH}
+\textbf{uv} est un projet soutenu par \textbf{Astral}\footnote{\textbf{Astral} s'est donné comme objectif d'améliorer l'écosystème Python en développant des outils de développement. \textbf{GitHUb} d'{\textbf{Astral}} : \url{https://github.com/astral-sh}}.
+\begin{description}
+    \item[Documentation \textit{uv}] : \url{https://docs.astral.sh/uv/}
+    \item[Serveur \textit{Discord}] : \url{https://discord.gg/JSsj35HH}
+\end{description}
 
 \section{Installation}
-La façon la plus rapide (bien plus rapide) d'installer \textbf{uv} est d'utiliser l'installateur autonome fournit par le projet \textbf{uv}. Une autre option est d'installer \textbf{uv} à partir de \textbf{PyPI} en utilisant d'autres outils comme \textbf{pipx} ou \textbf{pip}\footnote{Pour d'autres modes d'installation voir la documentation officielle : \url{https://docs.astral.sh/uv/getting-started/installation/}}.
+La façon la plus rapide (bien plus rapide) d'installer \textbf{uv} est d'utiliser l'installateur autonome fournit par le projet \textbf{uv}\footnote{Référence pour l'installateur d'\textbf{uv} : \url{https://docs.astral.sh/uv/reference/installer/} - Pour d'autres modes d'installation voir la documentation officielle : \url{https://docs.astral.sh/uv/getting-started/installation/}}.
 
 Pour installer la dernière version d'\textbf{uv} (sous forme de binaires) :
 \begin{lstlisting}[style=bash]
@@ -50,10 +50,15 @@ installing to /home/user/.local/bin
 everything's installed!
 \end{lstlisting}
 
-Il est cependant possible d'obtenir une version spécifique d'\textbf{uv}\footnote{Voir la page \textbf{GitHub} des différentes versions : \url{https://github.com/astral-sh/uv/releases}} en incluant le numéro de version dans l'\textit{URL} :
+Par défaut, \textbf{uv} est installé dans le répertoire \texttt{~/.local/bin}. Il est toutefois possible de spécifier un autre répertoire de destination :
+\begin{lstlisting}[style=bash]
+|\userprompt| curl -LsSf https://astral.sh/uv/install.sh |\textbar| env UV_INSTALL_DIR="/chemin/repertoire/destination" sh
+\end{lstlisting}
+
+Obtenir une version spécifique d'\textbf{uv}\footnote{Voir la page \textbf{GitHub} des différentes versions : \url{https://github.com/astral-sh/uv/releases}} en incluant le numéro de version dans l'\textit{URL} :
 \begin{lstlisting}[style=bash]
 |\userprompt| curl -LsSf https://astral.sh/uv/0.7.7/install.sh |\textbar| sh
-downloading uv 0.7.7 x86_64-unknown-linux-gnu
+downloading uv 0.7.13 x86_64-unknown-linux-gnu
 no checksums to verify
 installing to /home/krystof/.local/bin
   uv
@@ -135,12 +140,19 @@ Commands:
 \end{lstlisting}
 
 \section{La gestion de projet}
-
 Pour cette section et la suite du didacticiel, nous utiliserons un exemple d'application qui permet d'afficher un calendrier à l'aide d'une interface graphique créée via le \textit{framework} \textbf{Qt for Python}\footnote{\url{https://doc.qt.io/qtforpython-6/}, alias \textbf{PySide6} : \url{https://pypi.org/project/PySide6/}}. Le code de cette application se trouve sur un dépôt \textbf{GitHub}\footnote{\url{https://github.com/Krystof2so/PyCalendar} - Voir également l'annexe \textit{Code du projet \textbf{Calendar}} page \pageref{code_calendar}}. Il s'agit d'un petit projet personnel réalisé au cours de mon apprentissage du \textit{framework}, mais rien ne vous empêche de tester toutes les manipulations qui vont suivre à partir de tout autre projet. Le projet \textbf{Calendar} ne me sert qu'à illustrer mon propos.
 
 Créer et travailler sur des projets Python avec \textbf{uv}, revient à travailler avec le fichier \texttt{pyproject.toml}, fichier qui, comme nous l'avons vu dans les chapitres précédents, définit les dépendances.
 
-\subsection*{Création d'un projet}
+Avec \textbf{uv} la création, la gestion des dépendances et de l'environnement d'un projet implique les étapes suivantes :
+\begin{enumerate}
+    \item Initialisation du projet
+    \item Ajout des dépendances
+    \item Vérouillage des dépendances
+    \item Synchronisation de l'environnement 
+\end{enumerate}
+
+\subsection*{Initialisation d'un projet}
 
 Pour créer et initialiser un projet Python avec \textbf{uv}, naviguer jusqu'au répertoire dans lequel on souhaite stocker le projet (par exemple le répertoire personnel de l'utilisateur), puis exécuter la commande :
 \begin{lstlisting}[style=bash]
@@ -160,6 +172,8 @@ Cela crée dans le répertoire du projet (\texttt{mon\_projet}) la structure sui
 \begin{lstlisting}[style=tree]
 mon_projet/
 |\textbar|
+|\textbar|--.git/
+|\textbar|--.gitignore
 |\textbar|--.python-version
 |\textbar|--README.md
 |\textbar|--main.py
@@ -176,7 +190,7 @@ if __name__ == "__main__":
     main()
 \end{lstlisting}
 
-Et au final un fichier \texttt{pyproject.toml} initié avec une configuration basique :
+Et au final un fichier \texttt{pyproject.toml} contenant les métadonnées du projet :
 \begin{lstlisting}[style=file]
 [project]
 name = "mon-projet"
@@ -192,6 +206,7 @@ Nous pouvons changer la description :
 description = "Un simple projet"
 \end{lstlisting}
 
+Il est possible de modifier ce fichier manuellement ou via des commandes telles que \texttt{uv add} et \texttt{uv remove} (cf. infra) pour gérer le projet à l'aide de la ligne de commande.
 
 \subsection*{Initier un projet existant}
 Nous allons pour cela utiliser le projet \textbf{Calendar}\footnote{Cf. annexe \textit{Code du projet \textbf{Calendar}} page \pageref{code_calendar}}. Il suffit tout simplement de se rendre dans le répertoire du projet et de lancer la commande \texttt{init} :
@@ -406,6 +421,8 @@ Ou bien :
 Resolved 15 packages in 756ms
 \end{lstlisting}
 
+Le drapeau \texttt{-{}-upgrade-package} tentera de mettre à jour le paquet spécifié vers la dernière version compatible, tout en conservant le reste du fichier de verrouillage intact.
+
 Suppression d'une dépendance :
 \begin{lstlisting}[style=bash]
 |\userprompt| uv remove pyside6
@@ -447,7 +464,7 @@ Nous pouvez explicitement verrouiller et synchroniser notre projet avec les comm
 \begin{lstlisting}[style=bash]
 |\userprompt| uv lock
 Resolved 5 packages in 0.93ms
-$ uv sync
+|\userprompt| uv sync
 Resolved 5 packages in 1ms
 Audited 4 packages in 0.01ms
 \end{lstlisting}
@@ -462,7 +479,7 @@ Creating virtual environment at: .venv
 Installed 13 packages in 96ms
 \end{lstlisting}
 
-Avant d'essayer d'exécuter l'application, \textbf{uv} crée un environnement virtuel dans le répertoire \texttt{.venv/}. Il installe ensuite les dépendances et exécute enfin l'application.
+Avant d'essayer d'exécuter l'application, \textbf{uv} crée un environnement virtuel dans le répertoire \texttt{.venv/}. Il installe ensuite les dépendances et exécute enfin l'application. En fait, avant chaque invocation de \texttt{uv run}, \textbf{uv} vérifie que le fichier de verrouillage est à jour avec le fichier \texttt{pyproject.toml} et que l'environnement est à jour avec le fichier de verrouillage, ce qui permet de synchroniser votre projet sans intervention manuelle. \texttt{uv run} garantit que votre commande est exécutée dans un environnement cohérent et verrouillé.
 
 Pour vérifier quels modules sont présents au niveau de notre environnement virtuel :
 \begin{lstlisting}[style=bash]
@@ -513,7 +530,7 @@ De même, pour exécuter une commande sans vérifier si l'environnement est à j
 |\userprompt|
 \end{lstlisting}
 
-\subsubsection*{Le fichier \textit{pylock.toml}}
+\subsection*{Le fichier \textit{pylock.toml}}
 A ce sujet on se réfèrerar au \textbf{PEP 751}\footnote{Un format de fichier pour enregistrer les dépendances de Python pour la reproductibilité de l'installation : \url{https://peps.python.org/pep-0751/}}.
 
 \texttt{pylock.toml} est un format de sortie de résolution destiné à remplacer \texttt{requirements\\.txt}. \texttt{pylock.toml} est standardisé et agnostique, de sorte qu'à l'avenir, les fichiers \texttt{pylock\\.toml} générés par \textbf{uv} pourraient être installés par d'autres outils, et vice-versa. Mais ce format demeure encore expérimental et n'est pas pleinement opérationnel.
@@ -535,7 +552,7 @@ index = "https://pypi.org/simple"
 [...]
 \end{lstlisting}
 
-\section{Les commandes}
+\section{Les commandes courantes}
 \begin{table}[h!]
 \centering
 \begin{tabular}{|l|p{12cm}|}
