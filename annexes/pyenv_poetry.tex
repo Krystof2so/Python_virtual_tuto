@@ -1,0 +1,170 @@
+\chapter[L'alliance \textit{pyenv} / \textit{poetry}]{L'alliance \textit{pyenv} / \textit{poetry}\\ Pour un développement Python \\ propre et efficace}
+
+Voyons comment tirer pleinement parti de l’alliance entre \textbf{pyenv} et \textbf{poetry} sur un système \textbf{GNU/Linux}, en particulier sous \textbf{Debian}, afin de mettre en place un environnement de développement Python propre, isolé et maintenable.
+
+\section*{Installation des outils}
+\subsection*{Prérequis}
+Le système doit être dôté d'un certains nombres de paquets nécessaires à l'utilisation de ces deux outils :
+\begin{lstlisting}[style=bash]
+|\userprompt| sudo apt update && sudo apt install -y curl git make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget llvm libffi-dev libncursesw5-dev xz-utils libxml2-dev libxmlsec1-dev liblzma-dev tk-dev
+\end{lstlisting}
+
+\subsection*{Installation de \textit{pyenv}}
+Cloner le dépôt \textbf{pyenv} dans le dossier personnel de l'utilisateur :
+\begin{lstlisting}[style=bash]
+|\userprompt| curl https://pyenv.run | bash
+\end{lstlisting}
+
+Ce script va installer :
+\begin{itemize}
+    \item \textbf{pyenv}
+    \item \textbf{pyenv-doctor}
+    \item \textbf{pyenv-virtualenv}
+    \item \textbf{pyenv-update}
+\end{itemize}
+\medskip
+
+Pour utiliser \textbf{pyenv} avec \textbf{zsh} :
+\begin{lstlisting}[style=bash]
+|\userprompt| echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+|\userprompt| echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+|\userprompt| echo 'eval "$(pyenv init - zsh)"' >> ~/.zshrc 
+\end{lstlisting}
+
+Recharger le \textit{shell} :
+\begin{lstlisting}[style=bash]
+|\userprompt| exec "|\$|SHELL"
+\end{lstlisting}
+
+\subsection*{Installation de \textit{poetry}}
+Lancer l’installation via le script officiel :
+\begin{lstlisting}[style=bash]
+|\userprompt| curl -sSL https://install.python-poetry.org |\textbar| python3 -
+
+Retrieving Poetry metadata
+
+# Welcome to Poetry!
+
+This will download and install the latest version of Poetry,
+a dependency and package manager for Python.
+
+It will add the `poetry` command to Poetry's bin directory, located at:
+
+/home/user/.local/bin
+
+You can uninstall at any time by executing this script with the --uninstall option,
+and these changes will be reverted.
+
+Installing Poetry (2.1.3): Done
+
+Poetry (2.1.3) is installed now. Great!
+
+You can test that everything is set up by executing:
+
+`poetry --version`
+\end{lstlisting}
+
+Ajouter \textbf{poetry} au \texttt{PATH} dans le fichier de configuration du \textit{shell} (si ce n'est déjà fait) :
+\begin{lstlisting}[style=file]
+export PATH="|\$|HOME/.local/bin:|\$|PATH"
+\end{lstlisting}
+
+Puis recharger le \textit{shell}.
+
+\subsection*{Vérifier les installations}
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv --version
+pyenv 2.6.2
+|\userprompt| poetry --version
+Poetry (version 2.1.3)
+\end{lstlisting}
+
+\subsection*{Un outil de mise à jour}
+Il sera pour cela intéressant d'ajouter une fonctionnalité de mise à jour automatique de ces outils dans \texttt{.zshrc} (ou tout autre fichier de configuration du \textit{shell} utilisé). Voir par exemple : \url{https://github.com/Krystof2so/dotfiles/blob/main/zsh_functions/devtools.zsh} 
+
+\section*{Flux de travail pour créer notre environnement de développement}
+Prenons comme exemple la création d'un environnement de développement avec la dernière version de \textbf{python3.13} disponible.
+
+\subsection*{Installer la dernière version souhaitée}
+Vérifions les versions \textbf{3.13} disponibles :
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install --list |\textbar| grep 3.13.
+\end{lstlisting}
+
+Voici la liste des versions obtenues :
+\begin{verbatim}
+3.13.0
+3.13.0t
+3.13-dev
+3.13t-dev
+3.13.1
+3.13.1t
+3.13.2
+3.13.2t
+3.13.3
+3.13.3t
+3.13.4
+3.13.4t
+3.13.5
+3.13.5t
+pypy2.7-7.3.13-src
+pypy3.9-7.3.13-src
+pypy3.10-7.3.13-src
+\end{verbatim}
+
+Nous disposons donc, comme dernières versions, de \textbf{3.13.5} et \textbf{3.13.5t}. Le \texttt{t} signifie qu'il s'agit de la version de \textbf{python3.13.5} avec le support de \textbf{tkinter}\footnote{\url{https://docs.python.org/fr/3.13/library/tkinter.html}} activé. 
+
+Installons la dernière version de \textbf{python3.13} :
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv install 3.13.5  # L'installation prend un certain temps...
+\end{lstlisting}
+
+\subsection*{Préparons le répertoire du projet}
+\begin{lstlisting}[style=bash]
+|\userprompt| poetry new mon_projet --name code_projet
+Created package code_projet in mon_projet
+\end{lstlisting}
+
+Ce qui nous donne l'architecture suivante :
+\begin{lstlisting}[style=tree]
+.
+|\textbar|-- pyproject.toml
+|\textbar|-- README.md
+|\textbar|-- src
+|\textbar|   |\textbar|-- code_project
+|\textbar|       |\textbar|-- __init__.py
+|\textbar|   |\textbar|-- tests
+        |\textbar|-- __init__.py
+\end{lstlisting}
+
+\begin{lstlisting}[style=bash]
+|\userprompt| pyenv local 3.13.5  # Spécifier la version de Python
+\end{lstlisting}
+
+Le fichier \texttt{.python-version} est alors créé.
+
+\subsection*{Création de l'environnement virtuel}
+Pour que notre environnement virtuel soit inséré dans le répertoire du projet :
+\begin{lstlisting}[style=bash]
+|\userprompt| poetry config virtualenvs.in-project true --local
+\end{lstlisting}
+
+\textbf{Poetry} va automatiquement créer un environnement virtuel mais on veut s’assurer qu’il utilise bien la version de Python souhaitée :
+\begin{lstlisting}[style=bash]
+|\userprompt| poetry env use ~/.pyenv/versions/3.13.5/bin/python
+Creating virtualenv code-projet in /home/user/mon_projet/.venv
+Using virtualenv: /home/user/mon_projet/.venv
+\end{lstlisting}
+
+Voici maintenant le contenu du répertoire du projet :
+\begin{verbatim}
+poetry.toml
+pyproject.toml
+.python-version
+README.md  
+src/  
+tests/  
+.venv/
+\end{verbatim}
+
+Notre environnement de développement est désormais prêt..
